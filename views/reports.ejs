@@ -1,0 +1,74 @@
+<%- include('partials/header', { pageTitle: "Reports" }) %>
+
+<h2 class="mt-4 mb-3 text-center">Donation Reports</h2>
+
+<%
+// Initialize column totals
+let colTotals = {
+  Boy02: 0,
+  Girl02: 0,
+  Boy35: 0,
+  Girl35: 0,
+  Boy68: 0,
+  Girl68: 0,
+  Boy911: 0,
+  Girl911: 0,
+  Boy1214: 0,
+  Girl1214: 0,
+  Book: 0,
+  Stuffie: 0,
+  Bike: 0
+};
+%>
+
+<table>
+  <thead>
+    <tr>
+      <th>Donor</th>
+      <th>Boy 0-2</th>
+      <th>Girl 0-2</th>
+      <th>Boy 3-5</th>
+      <th>Girl 3-5</th>
+      <th>Boy 6-8</th>
+      <th>Girl 6-8</th>
+      <th>Boy 9-11</th>
+      <th>Girl 9-11</th>
+      <th>Boy 12-14</th>
+      <th>Girl 12-14</th>
+      <th>Book</th>
+      <th>Stuffie</th>
+      <th>Bike</th>
+      <th>Row Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% donations.forEach(d => { %>
+      <tr>
+        <td><%= d.donor %></td>
+        <% 
+          let rowTotal = 0;
+          for (let key in colTotals) { 
+            let val = parseInt(d[key]) || 0;
+            rowTotal += val;
+            colTotals[key] += val;
+        %>
+            <td><%= val %></td>
+        <% } %>
+        <td><%= rowTotal %></td>
+      </tr>
+    <% }) %>
+
+    <!-- Column totals row -->
+    <tr>
+      <td><strong>Total</strong></td>
+      <% let grandTotal = 0; %>
+      <% for (let key in colTotals) { %>
+        <% grandTotal += colTotals[key]; %>
+        <td><strong><%= colTotals[key] %></strong></td>
+      <% } %>
+      <td><strong><%= grandTotal %></strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<%- include('partials/footer') %>

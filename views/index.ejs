@@ -1,0 +1,463 @@
+<%- include('partials/header', { pageTitle: "Home" }) %>
+
+<div class="row mt-3 g-3 align-items-stretch">
+  <div class="col-2"></div>
+  <div class="col-5">
+    <input
+      id="donorName"
+      type="text"
+      class="form-control fs-4 fw-bold text-center"
+      placeholder="Enter Donor Name"
+      autocomplete="off"
+    />
+  </div>
+  <div class="col-3">
+    <input
+      id="dateDisplay"
+      type="text"
+      class="form-control fs-4 fw-bold text-center"
+      placeholder="Date"
+      autocomplete="off"
+    />
+  </div>
+  <div class="col-2"></div>
+</div>
+<div id="donorSuggestions" class="list-group"></div>
+
+<div class="row pt-5 g-3 align-items-stretch">
+  <!-- Toys 0-2 Section -->
+  <div class="col-1"></div>
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="B02Add">Boy 0 - 2</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="B02Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="B02Count"
+    />
+  </div>
+
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="G02Add">Girl 0 - 2</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="G02Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="G02Count"
+    />
+  </div>
+  <div class="col-1"></div>
+
+  <!-- Toys 3-5 Section -->
+  <div class="col-1"></div>
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="B35Add">Boy 3 - 5</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="B35Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="B35Count"
+    />
+  </div>
+
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="G35Add">Girl 3 - 5</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="G35Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="G35Count"
+    />
+  </div>
+  <div class="col-1"></div>
+
+  <!-- Toys 6-8 Section -->
+  <div class="col-1"></div>
+
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="B68Add">Boy 6 - 8</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="B68Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="B68Count"
+    />
+  </div>
+
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="G68Add">Girl 6 - 8</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="G68Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="G68Count"
+    />
+  </div>
+  <div class="col-1"></div>
+
+  <!-- Toys 9-11 Section -->
+  <div class="col-1"></div>
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="B911Add">Boy 9 - 11</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="B911Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="B911Count"
+    />
+  </div>
+
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="G911Add">Girl 9 - 11</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="G911Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="G911Count"
+    />
+  </div>
+  <div class="col-1"></div>
+
+  <!-- Toys 12-14 Section -->
+  <div class="col-1"></div>
+
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="B1214Add">Boy 12 - 14</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="B1214Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="B1214Count"
+    />
+  </div>
+
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="G1214Add">Girl 12 - 14</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="G1214Remove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="G1214Count"
+    />
+  </div>
+  <div class="col-1"></div>
+
+  <!-- Book Row -->
+  <div class="col-3"></div>
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="BookAdd">Book</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="BookRemove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="BookCount"
+    />
+  </div>
+  <div class="col-4"></div>
+
+  <!-- Stuffie Row -->
+  <div class="col-3"></div>
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="StuffieAdd">
+      Stuffed Animals
+    </button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="StuffieRemove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="StuffieCount"
+    />
+  </div>
+  <div class="col-4"></div>
+
+  <!-- Bike Row -->
+  <div class="col-3"></div>
+  <div class="col-3 d-grid">
+    <button class="btn btn-primary btn-lg" id="BikeAdd">Bicycle</button>
+  </div>
+  <div class="col-1 d-grid">
+    <button class="btn btn-danger btn-lg" id="BikeRemove">-</button>
+  </div>
+  <div class="col-1 d-grid">
+    <input
+      type="text"
+      class="form-control btn-lg text-center"
+      value="0"
+      readonly
+      id="BikeCount"
+    />
+  </div>
+  <div class="col-4"></div>
+</div>
+
+<div class="px-4 my-5 text-center">
+  <h2 class="display-6 fw-bold text-body-emphasis">Final Check</h2>
+  <div class="col-lg-6 mx-auto">
+    <p class="lead mb-4">
+      Do not navigate away from this page until donation is submitted or you
+      will lose current data and have to start over. Double check numbers before
+      submitting as once submitted this donation closes and cannot be edited
+      (future enhancement will fix this). If you do hit submit before finishing,
+      simply start another donation under the same name, and continue adding the
+      remaining inventory, the dates will link the separate parts.
+    </p>
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <button
+        type="button"
+        class="btn btn-primary btn-lg px-4 gap-3"
+        id="submitDonation"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  // Auto-set date
+  $("#dateDisplay").val(new Date().toLocaleDateString());
+
+  // Boy 0-2 increment/decrement
+  $("#B02Add").click(() => {
+    let val = parseInt($("#B02Count").val());
+    $("#B02Count").val(val + 1);
+  });
+  $("#B02Remove").click(() => {
+    let val = parseInt($("#B02Count").val());
+    $("#B02Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Girl 0-2 increment/decrement
+  $("#G02Add").click(() => {
+    let val = parseInt($("#G02Count").val());
+    $("#G02Count").val(val + 1);
+  });
+  $("#G02Remove").click(() => {
+    let val = parseInt($("#G02Count").val());
+    $("#G02Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Boy 3-5 increment/decrement
+  $("#B35Add").click(() => {
+    let val = parseInt($("#B35Count").val());
+    $("#B35Count").val(val + 1);
+  });
+  $("#B35Remove").click(() => {
+    let val = parseInt($("#B35Count").val());
+    $("#B35Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Girl 3-5 increment/decrement
+  $("#G35Add").click(() => {
+    let val = parseInt($("#G35Count").val());
+    $("#G35Count").val(val + 1);
+  });
+  $("#G35Remove").click(() => {
+    let val = parseInt($("#G35Count").val());
+    $("#G35Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Boy 6-8 increment/decrement
+  $("#B68Add").click(() => {
+    let val = parseInt($("#B68Count").val());
+    $("#B68Count").val(val + 1);
+  });
+  $("#B68Remove").click(() => {
+    let val = parseInt($("#B68Count").val());
+    $("#B68Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Girl 6-8 increment/decrement
+  $("#G68Add").click(() => {
+    let val = parseInt($("#G68Count").val());
+    $("#G68Count").val(val + 1);
+  });
+  $("#G68Remove").click(() => {
+    let val = parseInt($("#G68Count").val());
+    $("#G68Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Boy 9-11 increment/decrement
+  $("#B911Add").click(() => {
+    let val = parseInt($("#B911Count").val());
+    $("#B911Count").val(val + 1);
+  });
+  $("#B911Remove").click(() => {
+    let val = parseInt($("#B911Count").val());
+    $("#B911Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Girl 9-11 increment/decrement
+  $("#G911Add").click(() => {
+    let val = parseInt($("#G911Count").val());
+    $("#G911Count").val(val + 1);
+  });
+  $("#G911Remove").click(() => {
+    let val = parseInt($("#G911Count").val());
+    $("#G911Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Boy 12-14 increment/decrement
+  $("#B1214Add").click(() => {
+    let val = parseInt($("#B1214Count").val());
+    $("#B1214Count").val(val + 1);
+  });
+  $("#B1214Remove").click(() => {
+    let val = parseInt($("#B1214Count").val());
+    $("#B1214Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Girl 12-14 increment/decrement
+  $("#G1214Add").click(() => {
+    let val = parseInt($("#G1214Count").val());
+    $("#G1214Count").val(val + 1);
+  });
+  $("#G1214Remove").click(() => {
+    let val = parseInt($("#G1214Count").val());
+    $("#G1214Count").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Book increment/decrement
+  $("#BookAdd").click(() => {
+    let val = parseInt($("#BookCount").val());
+    $("#BookCount").val(val + 1);
+  });
+  $("#BookRemove").click(() => {
+    let val = parseInt($("#BookCount").val());
+    $("#BookCount").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Stuffife increment/decrement
+  $("#StuffieAdd").click(() => {
+    let val = parseInt($("#StuffieCount").val());
+    $("#StuffieCount").val(val + 1);
+  });
+  $("#StuffieRemove").click(() => {
+    let val = parseInt($("#StuffieCount").val());
+    $("#StuffieCount").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Bike increment/decrement
+  $("#BikeAdd").click(() => {
+    let val = parseInt($("#BikeCount").val());
+    $("#BikeCount").val(val + 1);
+  });
+  $("#BikeRemove").click(() => {
+    let val = parseInt($("#BikeCount").val());
+    $("#BikeCount").val(val > 0 ? val - 1 : 0);
+  });
+
+  // Submit donation
+  $("#submitDonation").click(() => {
+    const data = {
+      donor: $("#donorName").val(),
+      date: $("#dateDisplay").val(),
+      Boy02: parseInt($("#B02Count").val()),
+      Girl02: parseInt($("#G02Count").val()),
+      Boy35: parseInt($("#B35Count").val()),
+      Girl35: parseInt($("#G35Count").val()),
+      Boy68: parseInt($("#B68Count").val()),
+      Girl68: parseInt($("#G68Count").val()),
+      Boy911: parseInt($("#B911Count").val()),
+      Girl911: parseInt($("#G911Count").val()),
+      Boy1214: parseInt($("#B1214Count").val()),
+      Girl1214: parseInt($("#G1214Count").val()),
+      Book: parseInt($("#BookCount").val()),
+      Stuffie: parseInt($("#StuffieCount").val()),
+      Bike: parseInt($("#BikeCount").val()),
+    };
+
+    $.post("/submit", data, (res) => {
+      alert("Donation submitted!");
+      // reset form
+      $("#donorName").val("");
+      $("#B02Count").val(0);
+      $("#G02Count").val(0);
+      $("#B35Count").val(0);
+      $("#G35Count").val(0);
+      $("#B68Count").val(0);
+      $("#G68Count").val(0);
+      $("#B911Count").val(0);
+      $("#G911Count").val(0);
+      $("#B1214Count").val(0);
+      $("#G1214Count").val(0);
+      $("#BookCount").val(0);
+      $("#StuffieCount").val(0);
+      $("#BikeCount").val(0);
+    });
+  });
+</script>
+
+<%- include('partials/footer') %>
