@@ -63,49 +63,49 @@ app.get("/instructions", (req, res) => {
 });
 
 // GET reports
-// app.get("/reports", async (req, res) => {
-//   try {
-//     // Get all donations from the database, newest first
-//     const result = await pool.query("SELECT * FROM donations ORDER BY created_at DESC");
-
-//     // Map database fields to template keys (so EJS loop works)
-//     const donations = result.rows.map(d => ({
-//       donor: d.donor,
-//       B02Count: d.boy_02,
-//       G02Count: d.girl_02,
-//       B35Count: d.boy_35,
-//       G35Count: d.girl_35,
-//       B68Count: d.boy_68,
-//       G68Count: d.girl_68,
-//       B911Count: d.boy_911,
-//       G911Count: d.girl_911,
-//       B1214Count: d.boy_1214,
-//       G1214Count: d.girl_1214,
-//       BookCount: d.book,
-//       StuffieCount: d.stuffie,
-//       BikeCount: d.bike,
-//       inventory_by: d.inventory_by,
-//       comments: d.comments
-//     }));
-
-//     res.render("reports", { donations });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Error loading donations");
-//   }
-// });
-
 app.get("/reports", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM donations");
-    const donations = result.rows; // rows from Postgres
+    // Get all donations from the database, newest first
+    const result = await pool.query("SELECT * FROM donations ORDER BY created_at DESC");
+
+    // Map database fields to template keys (so EJS loop works)
+    const donations = result.rows.map(d => ({
+      donor: d.donor,
+      B02Count: d.boy_02,
+      G02Count: d.girl_02,
+      B35Count: d.boy_35,
+      G35Count: d.girl_35,
+      B68Count: d.boy_68,
+      G68Count: d.girl_68,
+      B911Count: d.boy_911,
+      G911Count: d.girl_911,
+      B1214Count: d.boy_1214,
+      G1214Count: d.girl_1214,
+      BookCount: d.book,
+      StuffieCount: d.stuffie,
+      BikeCount: d.bike,
+      inventory_by: d.inventory_by,
+      comments: d.comments
+    }));
 
     res.render("reports", { donations });
   } catch (err) {
-    console.error("Error querying donations:", err);  // <--- log full error
-    res.send("Error loading donations. Check server logs.");
+    console.error(err);
+    res.status(500).send("Error loading donations");
   }
 });
+
+// app.get("/reports", async (req, res) => {
+//   try {
+//     const result = await pool.query("SELECT * FROM donations");
+//     const donations = result.rows; // rows from Postgres
+
+//     res.render("reports", { donations });
+//   } catch (err) {
+//     console.error("Error querying donations:", err);  // <--- log full error
+//     res.send("Error loading donations. Check server logs.");
+//   }
+// });
 
 // POST donation
 app.post("/submit", async (req, res) => {
