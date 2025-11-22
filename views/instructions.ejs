@@ -1,6 +1,105 @@
-<%- include('partials/header', { pageTitle: "Instructions" }) %> 
+<%- include('partials/header', { pageTitle: "Instructions" }) %>
 
+<div class="container py-4">
+  <div class="card w-75 w-md-50 mx-auto">
+    <div class="list-group list-group-flush">
+      <a
+        href="#"
+        class="list-group-item list-group-item-action d-flex gap-3 py-3"
+        aria-current="true"
+      >
+        <!-- <img
+          src="/images/green check mark.png"
+          alt=""
+          width="32"
+          height="32"
+          class="rounded-circle flex-shrink-0"
+        /> -->
+        <div class="d-flex gap-2 w-100 justify-content-between">
+          <div>
+            <h4 class="mb-0 pb-4">Step 1:</h4>
+            <p class="mb-0 text-muted">
+              Opening the website or clicking the "Home" tab in the banner
+              resets the form, at that point it's ready to go. To begin, enter
+              the name of the donating person or agency. The date field
+              automatically populates with the current date. To over-ride,
+              simply enter a new date.
+            </p>
+          </div>
+        </div>
+      </a>
 
-<p>Here are some instructions</p>
+      <a
+        href="#"
+        class="list-group-item list-group-item-action d-flex gap-3 py-3"
+      >
+        <!-- <img
+          src="/images/green check mark.png"
+          alt=""
+          width="32"
+          height="32"
+          class="rounded-circle flex-shrink-0"
+        /> -->
+        <div class="d-flex gap-2 w-100 justify-content-between">
+          <div>
+            <h4 class="mb-0 pb-4">Step 2:</h4>
+            <p class="mb-0 text-muted">
+              Begin entering data. To add a toy to a specific category, just
+              click the blue button. For example, to add a toy to the Boy 3-5
+              category click
+            </p>
+
+            <div class="col-3 d-grid pt-3 pb-3">
+              <button class="btn btn-primary" id="B35Add">Boy 3 - 5</button>
+            </div>
+
+            <p>
+              Once clicked, you'll see the category total to the right increment
+              by one. If you need remove a toy from any category, just click
+            </p>
+
+            <div class="col-1 d-grid pb-3">
+              <button class="btn btn-danger" id="B35Remove">-</button>
+            </div>
+
+            <p>
+              Bulk quantities, such as "50 books" can be entered by clicking the
+              "bulk" button for that category, entering the bulk amount, and
+              hitting "OK". You should see the bulk amount added to the current
+              quantity.
+            </p>
+          </div>
+        </div>
+      </a>
+
+      <a
+        href="#"
+        class="list-group-item list-group-item-action d-flex gap-3 py-3"
+      >
+        <!-- <img
+          src="/images/green check mark.png"
+          alt=""
+          width="32"
+          height="32"
+          class="rounded-circle flex-shrink-0"
+        /> -->
+        <div class="d-flex gap-2 w-100 justify-content-between">
+          <div>
+            <h4 class="mb-0 pb-4">Step 3:</h4>
+            <p class="mb-0 text-muted">
+              When finished, verify that the entries appear correct and hit
+              "Submit". You should recieve a message stating that the inventory
+              has been completed. You can now check the "Reports" tab to verify
+              that the entry is now in the system. Once submitted the form is
+              not currently editable from the website. To add additional toys
+              from that same source, just create a new donation. The date will
+              link the two separate entries.
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
 
 <%-include('partials/footer') %>
