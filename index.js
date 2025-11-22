@@ -108,44 +108,87 @@ app.get("/reports", async (req, res) => {
 });
 
 // POST donation
+// app.post("/submit", async (req, res) => {
+//   const newDonation = req.body;
+//   console.log("Received donation:", newDonation);  // <--- log incoming data
+
+//   try {
+// const query = `
+//   INSERT INTO donations 
+//   (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
+//    boy911, girl911, boy1214, girl1214, book, stuffie, bike)
+//   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+//   RETURNING *;
+// `;
+
+//     const values = [
+//       newDonation.donor,
+//       newDonation.date,
+//       newDonation.Boy02,
+//       newDonation.Girl02,
+//       newDonation.Boy35,
+//       newDonation.Girl35,
+//       newDonation.Boy68,
+//       newDonation.Girl68,
+//       newDonation.Boy911,
+//       newDonation.Girl911,
+//       newDonation.Boy1214,
+//       newDonation.Girl1214,
+//       newDonation.Book,
+//       newDonation.Stuffie,
+//       newDonation.Bike
+//     ];
+
+//     const result = await pool.query(query, values);
+//     console.log("Inserted donation:", result.rows[0]);  // <--- see what actually went into DB
+
+//     res.send("Donation received!");
+//   } catch (err) {
+//     console.error("Error inserting donation:", err);
+//     res.status(500).send("Error saving donation. Check server logs.");
+//   }
+// });
+
+// index.js (partial) — replace your current /submit route
+
 app.post("/submit", async (req, res) => {
   const newDonation = req.body;
-  console.log("Received donation:", newDonation);  // <--- log incoming data
+
+  // Map front-end fields to database columns
+  const values = [
+    newDonation.donor,
+    newDonation.date,
+    parseInt(newDonation.B02Count) || 0,    // boy02
+    parseInt(newDonation.G02Count) || 0,    // girl02
+    parseInt(newDonation.B35Count) || 0,    // boy35
+    parseInt(newDonation.G35Count) || 0,    // girl35
+    parseInt(newDonation.B68Count) || 0,    // boy68
+    parseInt(newDonation.G68Count) || 0,    // girl68
+    parseInt(newDonation.B911Count) || 0,   // boy911
+    parseInt(newDonation.G911Count) || 0,   // girl911
+    parseInt(newDonation.B1214Count) || 0,  // boy1214
+    parseInt(newDonation.G1214Count) || 0,  // girl1214
+    parseInt(newDonation.BookCount) || 0,
+    parseInt(newDonation.StuffieCount) || 0,
+    parseInt(newDonation.BikeCount) || 0
+  ];
+
+  const insertQuery = `
+    INSERT INTO donations
+      (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
+       boy911, girl911, boy1214, girl1214, book, stuffie, bike)
+    VALUES
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+    RETURNING *;
+  `;
 
   try {
-const query = `
-  INSERT INTO donations 
-  (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
-   boy911, girl911, boy1214, girl1214, book, stuffie, bike)
-  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
-  RETURNING *;
-`;
-
-    const values = [
-      newDonation.donor,
-      newDonation.date,
-      newDonation.Boy02,
-      newDonation.Girl02,
-      newDonation.Boy35,
-      newDonation.Girl35,
-      newDonation.Boy68,
-      newDonation.Girl68,
-      newDonation.Boy911,
-      newDonation.Girl911,
-      newDonation.Boy1214,
-      newDonation.Girl1214,
-      newDonation.Book,
-      newDonation.Stuffie,
-      newDonation.Bike
-    ];
-
-    const result = await pool.query(query, values);
-    console.log("Inserted donation:", result.rows[0]);  // <--- see what actually went into DB
-
+    const result = await pool.query(insertQuery, values);
+    console.log("Inserted Donation:", result.rows[0]);
     res.send("Donation received!");
   } catch (err) {
     console.error("Error inserting donation:", err);
-    res.status(500).send("Error saving donation. Check server logs.");
+    res.status(500).send("Error inserting donation");
   }
 });
 
