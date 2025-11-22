@@ -113,13 +113,13 @@ app.post("/submit", async (req, res) => {
   console.log("Received donation:", newDonation);  // <--- log incoming data
 
   try {
-    const query = `
-      INSERT INTO donations 
-      (donor, date, "Boy02", "Girl02", "Boy35", "Girl35", "Boy68", "Girl68",
-       "Boy911", "Girl911", "Boy1214", "Girl1214", "Book", "Stuffie", "Bike")
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
-      RETURNING *;
-    `;
+const query = `
+  INSERT INTO donations 
+  (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
+   boy911, girl911, boy1214, girl1214, book, stuffie, bike)
+  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+  RETURNING *;
+`;
 
     const values = [
       newDonation.donor,
