@@ -1,28 +1,26 @@
 <%- include('partials/header', { pageTitle: "Reports" }) %>
 
-<div>
 <h2 class="mt-4 mb-3 text-center">Donation Reports</h2>
 
 <%
-// Initialize column totals
 let colTotals = {
-  Boy02: 0,
-  Girl02: 0,
-  Boy35: 0,
-  Girl35: 0,
-  Boy68: 0,
-  Girl68: 0,
-  Boy911: 0,
-  Girl911: 0,
-  Boy1214: 0,
-  Girl1214: 0,
-  Book: 0,
-  Stuffie: 0,
-  Bike: 0
+  B02Count: 0,
+  G02Count: 0,
+  B35Count: 0,
+  G35Count: 0,
+  B68Count: 0,
+  G68Count: 0,
+  B911Count: 0,
+  G911Count: 0,
+  B1214Count: 0,
+  G1214Count: 0,
+  BookCount: 0,
+  StuffieCount: 0,
+  BikeCount: 0
 };
 %>
 
-<table>
+<table class="table table-striped table-bordered">
   <thead>
     <tr>
       <th>Donor</th>
@@ -39,6 +37,8 @@ let colTotals = {
       <th>Book</th>
       <th>Stuffie</th>
       <th>Bike</th>
+      <th>Inventory By</th>
+      <th>Comments</th>
       <th>Row Total</th>
     </tr>
   </thead>
@@ -46,15 +46,17 @@ let colTotals = {
     <% donations.forEach(d => { %>
       <tr>
         <td><%= d.donor %></td>
-        <% 
+        <%
           let rowTotal = 0;
-          for (let key in colTotals) { 
+          for (let key in colTotals) {
             let val = parseInt(d[key]) || 0;
             rowTotal += val;
             colTotals[key] += val;
         %>
             <td><%= val %></td>
         <% } %>
+        <td><%= d.inventory_by || "" %></td>
+        <td><%= d.comments || "" %></td>
         <td><%= rowTotal %></td>
       </tr>
     <% }) %>
@@ -67,6 +69,7 @@ let colTotals = {
         <% grandTotal += colTotals[key]; %>
         <td><strong><%= colTotals[key] %></strong></td>
       <% } %>
+      <td colspan="3"></td>
       <td><strong><%= grandTotal %></strong></td>
     </tr>
   </tbody>

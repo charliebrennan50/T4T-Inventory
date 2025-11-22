@@ -419,22 +419,23 @@
   // Submit donation
   $("#submitDonation").click(() => {
     const data = {
-      donor: $("#donorName").val(),
-      date: $("#dateDisplay").val(),
-      Boy02: parseInt($("#B02Count").val()),
-      Girl02: parseInt($("#G02Count").val()),
-      Boy35: parseInt($("#B35Count").val()),
-      Girl35: parseInt($("#G35Count").val()),
-      Boy68: parseInt($("#B68Count").val()),
-      Girl68: parseInt($("#G68Count").val()),
-      Boy911: parseInt($("#B911Count").val()),
-      Girl911: parseInt($("#G911Count").val()),
-      Boy1214: parseInt($("#B1214Count").val()),
-      Girl1214: parseInt($("#G1214Count").val()),
-      Book: parseInt($("#BookCount").val()),
-      Stuffie: parseInt($("#StuffieCount").val()),
-      Bike: parseInt($("#BikeCount").val()),
-    };
+  donorName: $("#donorName").val(),
+  B02Count: parseInt($("#B02Count").val()),
+  G02Count: parseInt($("#G02Count").val()),
+  B35Count: parseInt($("#B35Count").val()),
+  G35Count: parseInt($("#G35Count").val()),
+  B68Count: parseInt($("#B68Count").val()),
+  G68Count: parseInt($("#G68Count").val()),
+  B911Count: parseInt($("#B911Count").val()),
+  G911Count: parseInt($("#G911Count").val()),
+  B1214Count: parseInt($("#B1214Count").val()),
+  G1214Count: parseInt($("#G1214Count").val()),
+  BookCount: parseInt($("#BookCount").val()),
+  StuffieCount: parseInt($("#StuffieCount").val()),
+  BikeCount: parseInt($("#BikeCount").val()),
+  inventoryBy: $("#inventoryBy").val(),   // optional
+  comments: $("#comments").val()          // optional
+};
 
     $.post("/submit", data, (res) => {
       alert("Donation submitted!");
