@@ -110,37 +110,42 @@ app.get("/reports", async (req, res) => {
 // POST donation
 app.post("/submit", async (req, res) => {
   const newDonation = req.body;
+  console.log("Received donation:", newDonation);  // <--- log incoming data
 
   try {
-    await pool.query(
-      `INSERT INTO donations 
-      (donor, boy_02, girl_02, boy_35, girl_35, boy_68, girl_68, 
-       boy_911, girl_911, boy_1214, girl_1214, book, stuffie, bike, inventory_by, comments)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
-      [
-        newDonation.donorName,
-        newDonation.B02Count,
-        newDonation.G02Count,
-        newDonation.B35Count,
-        newDonation.G35Count,
-        newDonation.B68Count,
-        newDonation.G68Count,
-        newDonation.B911Count,
-        newDonation.G911Count,
-        newDonation.B1214Count,
-        newDonation.G1214Count,
-        newDonation.BookCount,
-        newDonation.StuffieCount,
-        newDonation.BikeCount,
-        newDonation.inventoryBy || null,
-        newDonation.comments || null
-      ]
-    );
+    const query = `
+      INSERT INTO donations 
+      (donor, date, "Boy02", "Girl02", "Boy35", "Girl35", "Boy68", "Girl68",
+       "Boy911", "Girl911", "Boy1214", "Girl1214", "Book", "Stuffie", "Bike")
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+      RETURNING *;
+    `;
+
+    const values = [
+      newDonation.donor,
+      newDonation.date,
+      newDonation.Boy02,
+      newDonation.Girl02,
+      newDonation.Boy35,
+      newDonation.Girl35,
+      newDonation.Boy68,
+      newDonation.Girl68,
+      newDonation.Boy911,
+      newDonation.Girl911,
+      newDonation.Boy1214,
+      newDonation.Girl1214,
+      newDonation.Book,
+      newDonation.Stuffie,
+      newDonation.Bike
+    ];
+
+    const result = await pool.query(query, values);
+    console.log("Inserted donation:", result.rows[0]);  // <--- see what actually went into DB
 
     res.send("Donation received!");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error saving donation");
+    console.error("Error inserting donation:", err);
+    res.status(500).send("Error saving donation. Check server logs.");
   }
 });
 
