@@ -5,3 +5,8 @@
   .header-text{
     font-size: 2rem;
   }
+
+  /* Apply to all interactive elements */
+button, input, select, textarea {
+  touch-action: manipulation;
+}
