@@ -12,14 +12,14 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 // // Configure Postgres pool
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL || 'postgres://postgres:Meaghan1@localhost:5432/t4t_donations'
-// });
-
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }  // required on Render
+  connectionString: process.env.DATABASE_URL || 'postgres://postgres:Meaghan1@localhost:5432/t4t_donations',
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: { rejectUnauthorized: false }  // required on Render
+// });
 
 async function createTable() {
   const sql = `
