@@ -16,10 +16,6 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgres://postgres:Meaghan1@localhost:5432/t4t_donations',
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: { rejectUnauthorized: false }  // required on Render
-// });
 
 async function createTable() {
   const sql = `
@@ -62,38 +58,6 @@ app.get("/instructions", (req, res) => {
   res.render("instructions");
 });
 
-// GET reports
-// app.get("/reports", async (req, res) => {
-//   try {
-//     // Get all donations from the database, newest first
-//     const result = await pool.query("SELECT * FROM donations ORDER BY created_at DESC");
-
-//     // Map database fields to template keys (so EJS loop works)
-//     const donations = result.rows.map(d => ({
-//       donor: d.donor,
-//       B02Count: d.boy_02,
-//       G02Count: d.girl_02,
-//       B35Count: d.boy_35,
-//       G35Count: d.girl_35,
-//       B68Count: d.boy_68,
-//       G68Count: d.girl_68,
-//       B911Count: d.boy_911,
-//       G911Count: d.girl_911,
-//       B1214Count: d.boy_1214,
-//       G1214Count: d.girl_1214,
-//       BookCount: d.book,
-//       StuffieCount: d.stuffie,
-//       BikeCount: d.bike,
-//       inventory_by: d.inventory_by,
-//       comments: d.comments
-//     }));
-
-//     res.render("reports", { donations });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Error loading donations");
-//   }
-// });
 
 app.get("/reports", async (req, res) => {
   try {
@@ -107,49 +71,6 @@ app.get("/reports", async (req, res) => {
   }
 });
 
-// POST donation
-// app.post("/submit", async (req, res) => {
-//   const newDonation = req.body;
-//   console.log("Received donation:", newDonation);  // <--- log incoming data
-
-//   try {
-// const query = `
-//   INSERT INTO donations 
-//   (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
-//    boy911, girl911, boy1214, girl1214, book, stuffie, bike)
-//   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
-//   RETURNING *;
-// `;
-
-//     const values = [
-//       newDonation.donor,
-//       newDonation.date,
-//       newDonation.Boy02,
-//       newDonation.Girl02,
-//       newDonation.Boy35,
-//       newDonation.Girl35,
-//       newDonation.Boy68,
-//       newDonation.Girl68,
-//       newDonation.Boy911,
-//       newDonation.Girl911,
-//       newDonation.Boy1214,
-//       newDonation.Girl1214,
-//       newDonation.Book,
-//       newDonation.Stuffie,
-//       newDonation.Bike
-//     ];
-
-//     const result = await pool.query(query, values);
-//     console.log("Inserted donation:", result.rows[0]);  // <--- see what actually went into DB
-
-//     res.send("Donation received!");
-//   } catch (err) {
-//     console.error("Error inserting donation:", err);
-//     res.status(500).send("Error saving donation. Check server logs.");
-//   }
-// });
-
-// index.js (partial) — replace your current /submit route
 
 app.post("/submit", async (req, res) => {
   const newDonation = req.body;
@@ -172,20 +93,6 @@ app.post("/submit", async (req, res) => {
     newDonation.stuffie,
     newDonation.bike
   ];
-    // parseInt(newDonation.B02Count) || 0,    // boy02
-    // parseInt(newDonation.G02Count) || 0,    // girl02
-    // parseInt(newDonation.B35Count) || 0,    // boy35
-    // parseInt(newDonation.G35Count) || 0,    // girl35
-    // parseInt(newDonation.B68Count) || 0,    // boy68
-    // parseInt(newDonation.G68Count) || 0,    // girl68
-    // parseInt(newDonation.B911Count) || 0,   // boy911
-    // parseInt(newDonation.G911Count) || 0,   // girl911
-    // parseInt(newDonation.B1214Count) || 0,  // boy1214
-    // parseInt(newDonation.G1214Count) || 0,  // girl1214
-    // parseInt(newDonation.BookCount) || 0,
-    // parseInt(newDonation.StuffieCount) || 0,
-    // parseInt(newDonation.BikeCount) || 0
-  // ];
 
   const insertQuery = `
     INSERT INTO donations
