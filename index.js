@@ -158,20 +158,34 @@ app.post("/submit", async (req, res) => {
   const values = [
     newDonation.donor,
     newDonation.date,
-    parseInt(newDonation.B02Count) || 0,    // boy02
-    parseInt(newDonation.G02Count) || 0,    // girl02
-    parseInt(newDonation.B35Count) || 0,    // boy35
-    parseInt(newDonation.G35Count) || 0,    // girl35
-    parseInt(newDonation.B68Count) || 0,    // boy68
-    parseInt(newDonation.G68Count) || 0,    // girl68
-    parseInt(newDonation.B911Count) || 0,   // boy911
-    parseInt(newDonation.G911Count) || 0,   // girl911
-    parseInt(newDonation.B1214Count) || 0,  // boy1214
-    parseInt(newDonation.G1214Count) || 0,  // girl1214
-    parseInt(newDonation.BookCount) || 0,
-    parseInt(newDonation.StuffieCount) || 0,
-    parseInt(newDonation.BikeCount) || 0
+    newDonation.boy02,
+    newDonation.girl02,
+    newDonation.boy35,
+    newDonation.girl35,
+    newDonation.boy68,
+    newDonation.girl68,
+    newDonation.boy911,
+    newDonation.girl911,
+    newDonation.boy1214,
+    newDonation.girl1214,
+    newDonation.book,
+    newDonation.stuffie,
+    newDonation.bike
   ];
+    // parseInt(newDonation.B02Count) || 0,    // boy02
+    // parseInt(newDonation.G02Count) || 0,    // girl02
+    // parseInt(newDonation.B35Count) || 0,    // boy35
+    // parseInt(newDonation.G35Count) || 0,    // girl35
+    // parseInt(newDonation.B68Count) || 0,    // boy68
+    // parseInt(newDonation.G68Count) || 0,    // girl68
+    // parseInt(newDonation.B911Count) || 0,   // boy911
+    // parseInt(newDonation.G911Count) || 0,   // girl911
+    // parseInt(newDonation.B1214Count) || 0,  // boy1214
+    // parseInt(newDonation.G1214Count) || 0,  // girl1214
+    // parseInt(newDonation.BookCount) || 0,
+    // parseInt(newDonation.StuffieCount) || 0,
+    // parseInt(newDonation.BikeCount) || 0
+  // ];
 
   const insertQuery = `
     INSERT INTO donations

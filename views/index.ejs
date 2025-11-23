@@ -436,6 +436,8 @@
   bike: parseInt($("#BikeCount").val())
 };
 
+alert(data);
+
     $.post("/submit", data, (res) => {
       alert("Donation submitted!");
       // reset form
