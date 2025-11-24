@@ -13,3 +13,19 @@ select,
 textarea {
   touch-action: manipulation;
 }
+
+button {
+  background-color: #4CAF50;  /* normal color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+button:active {
+  transform: scale(0.95);       /* slightly shrink the button */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) inset; /* optional pressed effect */
+}

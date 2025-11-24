@@ -1,6 +1,5 @@
 <%- include('partials/header', { pageTitle: "Home" }) %>
 
-  <audio id="clickSound" src="/sounds/click.wav" preload="auto"></audio>
 
 <div class="row mt-3 g-3 align-items-stretch">
   <div class="col-2"></div>
@@ -286,18 +285,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-document.addEventListener("DOMContentLoaded", () => {
-  const clickSound = document.getElementById("clickSound").cloneNode();
-
-  function playClick() {
-    clickSound.currentTime = 0; // restart sound if still playing
-    clickSound.play();
-  }
-
-  document.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", playClick);
-  });
-});
 
   // Auto-set date
   $("#dateDisplay").val(new Date().toLocaleDateString());
