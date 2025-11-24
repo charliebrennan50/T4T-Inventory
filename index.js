@@ -36,6 +36,7 @@ async function createTable() {
       Book INT DEFAULT 0,
       Stuffie INT DEFAULT 0,
       Bike INT DEFAULT 0,
+      Stocking INT DEFAULT 0,
       inventory_person TEXT,
       comments TEXT
     );
@@ -91,15 +92,16 @@ app.post("/submit", async (req, res) => {
     newDonation.girl1214,
     newDonation.book,
     newDonation.stuffie,
-    newDonation.bike
+    newDonation.bike,
+    newDonation.stocking
   ];
 
   const insertQuery = `
     INSERT INTO donations
       (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
-       boy911, girl911, boy1214, girl1214, book, stuffie, bike)
+       boy911, girl911, boy1214, girl1214, book, stuffie, bike,stocking)
     VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
     RETURNING *;
   `;
 
