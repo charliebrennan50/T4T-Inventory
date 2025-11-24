@@ -39,8 +39,6 @@ let colTotals = {
       <th>Stuffie</th>
       <th>Bike</th>
       <th>Stocking</th>
-      <th>Inventory By</th>
-      <th>Comments</th>
       <th>Row Total</th>
     </tr>
   </thead>
@@ -57,8 +55,6 @@ let colTotals = {
         %>
             <td><%= val %></td>
         <% } %>
-        <td><%= d.inventory_by || "" %></td>
-        <td><%= d.comments || "" %></td>
         <td><%= rowTotal %></td>
       </tr>
     <% }) %>
