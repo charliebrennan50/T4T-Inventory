@@ -182,9 +182,15 @@
   </div>
   <div class="col-1 d-grid">
     <button class="btn btn-danger btn-lg" id="B911Remove">-</button>
-  </div><div class="col-1 d-grid">
-  <button class="btn btn-secondary btn-lg" onclick="openBulkModal('B911Count')">Bulk</button>
-</div>
+  </div>
+  <div class="col-1 d-grid">
+    <button
+      class="btn btn-secondary btn-lg"
+      onclick="openBulkModal('B911Count')"
+    >
+      Bulk
+    </button>
+  </div>
   <div class="col-1 d-grid">
     <input
       type="text"
@@ -202,8 +208,13 @@
     <button class="btn btn-danger btn-lg" id="G911Remove">-</button>
   </div>
   <div class="col-1 d-grid">
-  <button class="btn btn-secondary btn-lg" onclick="openBulkModal('G911Count')">Bulk</button>
-</div>
+    <button
+      class="btn btn-secondary btn-lg"
+      onclick="openBulkModal('G911Count')"
+    >
+      Bulk
+    </button>
+  </div>
   <div class="col-1 d-grid">
     <input
       type="text"
@@ -274,8 +285,13 @@
     <button class="btn btn-danger btn-lg" id="BookRemove">-</button>
   </div>
   <div class="col-1 d-grid">
-  <button class="btn btn-secondary btn-lg" onclick="openBulkModal('BookCount')">Bulk</button>
-</div>
+    <button
+      class="btn btn-secondary btn-lg"
+      onclick="openBulkModal('BookCount')"
+    >
+      Bulk
+    </button>
+  </div>
   <div class="col-1 d-grid">
     <input
       type="text"
@@ -287,14 +303,21 @@
   </div>
 
   <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="StockingAdd">Stocking Stuffer</button>
+    <button class="btn btn-primary btn-lg" id="StockingAdd">
+      Stocking Stuffer
+    </button>
   </div>
   <div class="col-1 d-grid">
     <button class="btn btn-danger btn-lg" id="StockingRemove">-</button>
   </div>
   <div class="col-1 d-grid">
-  <button class="btn btn-secondary btn-lg" onclick="openBulkModal('StockingCount')">Bulk</button>
-</div>
+    <button
+      class="btn btn-secondary btn-lg"
+      onclick="openBulkModal('StockingCount')"
+    >
+      Bulk
+    </button>
+  </div>
   <div class="col-1 d-grid">
     <input
       type="text"
@@ -315,8 +338,13 @@
     <button class="btn btn-danger btn-lg" id="StuffieRemove">-</button>
   </div>
   <div class="col-1 d-grid">
-  <button class="btn btn-secondary btn-lg" onclick="openBulkModal('StuffieCount')">Bulk</button>
-</div>
+    <button
+      class="btn btn-secondary btn-lg"
+      onclick="openBulkModal('StuffieCount')"
+    >
+      Bulk
+    </button>
+  </div>
   <div class="col-1 d-grid">
     <input
       type="text"
@@ -332,9 +360,15 @@
   </div>
   <div class="col-1 d-grid">
     <button class="btn btn-danger btn-lg" id="BikeRemove">-</button>
-  </div><div class="col-1 d-grid">
-  <button class="btn btn-secondary btn-lg" onclick="openBulkModal('BikeCount')">Bulk</button>
-</div>
+  </div>
+  <div class="col-1 d-grid">
+    <button
+      class="btn btn-secondary btn-lg"
+      onclick="openBulkModal('BikeCount')"
+    >
+      Bulk
+    </button>
+  </div>
   <div class="col-1 d-grid">
     <input
       type="text"
@@ -366,7 +400,42 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="bulkModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Bulk Add</h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          onclick="closeBulkModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <label for="bulkAmount">Quantity:</label>
+        <input type="text" id="bulkAmount" class="form-control" value="" />
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          onclick="closeBulkModal()"
+        >
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" id="applyBulk">
+          Apply
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
   // Auto-set date
   $("#dateDisplay").val(new Date().toLocaleDateString());
@@ -510,6 +579,50 @@
     let val = parseInt($("#StockingCount").val());
     $("#StockingCount").val(val > 0 ? val - 1 : 0);
   });
+
+  function openBulkModal(targetId) {
+    bulkTarget = targetId;
+
+    const bulkAmountInput = document.getElementById("bulkAmount");
+    bulkAmountInput.value = "";
+
+    const modalEl = document.getElementById("bulkModal");
+    if (!modalEl) return;
+
+    const bulkModal = new bootstrap.Modal(modalEl);
+    bulkModal.show();
+
+    // Focus input after modal is shown
+    setTimeout(() => bulkAmountInput.focus(), 100);
+
+    function applyBulk() {
+      const amount = parseInt(bulkAmountInput.value, 10);
+      if (isNaN(amount)) return; // ignore invalid input
+
+      const inputEl = document.getElementById(bulkTarget);
+      let newVal = (parseInt(inputEl.value, 10) || 0) + amount;
+      if (newVal < 0) newVal = 0; // prevent negative total
+      inputEl.value = newVal;
+
+      bulkModal.hide();
+    }
+
+    // Apply button click
+    const applyBtn = document.getElementById("applyBulk");
+    applyBtn.onclick = applyBulk;
+
+    // Key listener on the modal itself
+    modalEl.addEventListener(
+      "keydown",
+      function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault(); // prevent default form submission or weird behavior
+          applyBulk();
+        }
+      },
+      { once: true }
+    ); // triggers once per modal open
+  }
 
   // Submit donation
   $("#submitDonation").click(() => {

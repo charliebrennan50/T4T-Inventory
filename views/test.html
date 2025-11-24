@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bootstrap Modal Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<input type="text" id="StockingCount" value="0" />
+
+<button class="btn btn-secondary btn-lg" onclick="openBulkModal('StockingCount')">Bulk</button>
+
+<div class="modal fade" id="bulkModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Bulk Add</h5>
+        <button type="button" class="btn-close" aria-label="Close" onclick="closeBulkModal()"></button>
+      </div>
+      <div class="modal-body">
+        <label for="bulkAmount">Quantity:</label>
+        <input type="number" id="bulkAmount" class="form-control" min="1" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeBulkModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" id="applyBulk">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let bulkTarget = null;
+let bulkModalInstance = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const modalEl = document.getElementById("bulkModal");
+  if (modalEl) {
+    bulkModalInstance = new bootstrap.Modal(modalEl, { backdrop: 'static' });
+    console.log("Modal instance created"); // debug
+  } else {
+    console.error("Modal element not found!");
+  }
+});
+
+function openBulkModal(targetId) {
+  bulkTarget = targetId;
+  document.getElementById("bulkAmount").value = "";
+  console.log("Opening modal for", targetId); // debug
+  if (bulkModalInstance) bulkModalInstance.show();
+}
+
+function closeBulkModal() {
+  if (bulkModalInstance) bulkModalInstance.hide();
+}
+
+document.getElementById("applyBulk").addEventListener("click", () => {
+  const amount = parseInt(document.getElementById("bulkAmount").value, 10);
+  if (!amount || amount < 1) return;
+
+  const inputEl = document.getElementById(bulkTarget);
+  const currentVal = parseInt(inputEl.value, 10) || 0;
+  inputEl.value = currentVal + amount;
+
+  closeBulkModal();
+});
+</script>
+
+</body>
+</html>
