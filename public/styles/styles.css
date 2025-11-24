@@ -1,12 +1,15 @@
 .fixed-width-btn {
-    width: 150px; /* Adjust the desired width in pixels */
-  }
+  width: 150px; /* Adjust the desired width in pixels */
+}
 
-  .header-text{
-    font-size: 2rem;
-  }
+.header-text {
+  font-size: 2rem;
+}
 
-  /* Apply to all interactive elements */
-button, input, select, textarea {
+/* Apply to all interactive elements */
+button,
+input,
+select,
+textarea {
   touch-action: manipulation;
 }

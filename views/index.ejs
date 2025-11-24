@@ -1,5 +1,8 @@
 <%- include('partials/header', { pageTitle: "Home" }) %>
 
+  //Button Click
+  <audio id="clickSound" src="/sounds/click.wav" preload="auto"></audio>;
+
 <div class="row mt-3 g-3 align-items-stretch">
   <div class="col-2"></div>
   <div class="col-5">
@@ -266,9 +269,9 @@
   <h2 class="display-6 fw-bold text-body-emphasis">Final Check</h2>
   <div class="col-lg-6 mx-auto">
     <p class="lead mb-4">
-      Ensure you've entered the Donor's name.  Double check form entries to ensure they look reasonable and complete.
-      Make sure you've got nothing else to add and that you've noted any issues
-      in the comments section.
+      Ensure you've entered the Donor's name. Double check form entries to
+      ensure they look reasonable and complete. Make sure you've got nothing
+      else to add and that you've noted any issues in the comments section.
     </p>
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <button
@@ -283,6 +286,20 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+document.addEventListener("DOMContentLoaded", () => {
+  const clickSound = document.getElementById("clickSound").cloneNode();
+
+  function playClick() {
+    clickSound.currentTime = 0; // restart sound if still playing
+    clickSound.play();
+  }
+
+  document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", playClick);
+  });
+});
+
   // Auto-set date
   $("#dateDisplay").val(new Date().toLocaleDateString());
 
@@ -419,22 +436,22 @@
   // Submit donation
   $("#submitDonation").click(() => {
     const data = {
-  donor: $("#donorName").val(),
-  date: $("#dateDisplay").val(),
-  boy02: parseInt($("#B02Count").val()),
-  girl02: parseInt($("#G02Count").val()),
-  boy35: parseInt($("#B35Count").val()),
-  girl35: parseInt($("#G35Count").val()),
-  boy68: parseInt($("#B68Count").val()),
-  girl68: parseInt($("#G68Count").val()),
-  boy911: parseInt($("#B911Count").val()),
-  girl911: parseInt($("#G911Count").val()),
-  boy1214: parseInt($("#B1214Count").val()),
-  girl1214: parseInt($("#G1214Count").val()),
-  book: parseInt($("#BookCount").val()),
-  stuffie: parseInt($("#StuffieCount").val()),
-  bike: parseInt($("#BikeCount").val())
-};
+      donor: $("#donorName").val(),
+      date: $("#dateDisplay").val(),
+      boy02: parseInt($("#B02Count").val()),
+      girl02: parseInt($("#G02Count").val()),
+      boy35: parseInt($("#B35Count").val()),
+      girl35: parseInt($("#G35Count").val()),
+      boy68: parseInt($("#B68Count").val()),
+      girl68: parseInt($("#G68Count").val()),
+      boy911: parseInt($("#B911Count").val()),
+      girl911: parseInt($("#G911Count").val()),
+      boy1214: parseInt($("#B1214Count").val()),
+      girl1214: parseInt($("#G1214Count").val()),
+      book: parseInt($("#BookCount").val()),
+      stuffie: parseInt($("#StuffieCount").val()),
+      bike: parseInt($("#BikeCount").val()),
+    };
 
     $.post("/submit", data, (res) => {
       alert("Donation submitted!");
