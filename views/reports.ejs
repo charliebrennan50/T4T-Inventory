@@ -2,29 +2,25 @@
 
 <h2 class="mt-4 mb-3 text-center">Donation Reports</h2>
 
-<%
-let colTotals = {
-  boy02: 0,
-  girl02: 0,
-  boy35: 0,
-  girl35: 0,
-  boy68: 0,
-  girl68: 0,
-  boy911: 0,
-  girl911: 0,
-  boy1214: 0,
-  girl1214: 0,
-  book: 0,
-  stuffie: 0,
-  bike: 0,
-  stocking: 0
-};
+<% let colTotals = { boy02: 0, girl02: 0, boy35: 0, girl35: 0, boy68: 0, girl68:
+0, boy911: 0, girl911: 0, boy1214: 0, girl1214: 0, book: 0, stuffie: 0, bike: 0,
+stocking: 0 }; %>
+
+<% 
+  function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+  }
 %>
 
 <table class="table table-striped table-bordered">
   <thead>
     <tr>
       <th>Donor</th>
+      <th>Date</th>
       <th>Boy 0-2</th>
       <th>Girl 0-2</th>
       <th>Boy 3-5</th>
@@ -44,28 +40,26 @@ let colTotals = {
   </thead>
   <tbody>
     <% donations.forEach(d => { %>
-      <tr>
-        <td><%= d.donor %></td>
-        <%
-          let rowTotal = 0;
-          for (let key in colTotals) {
-            let val = parseInt(d[key]) || 0;
-            rowTotal += val;
-            colTotals[key] += val;
-        %>
-            <td><%= val %></td>
-        <% } %>
-        <td><%= rowTotal %></td>
-      </tr>
+    <tr>
+      <td><%= d.donor %></td>
+      <td>
+        <%= formatDate(d.date) %>
+      </td>
+
+      <% let rowTotal = 0; for (let key in colTotals) { let val =
+      parseInt(d[key]) || 0; rowTotal += val; colTotals[key] += val; %>
+      <td><%= val %></td>
+      <% } %>
+      <td><%= rowTotal %></td>
+    </tr>
     <% }) %>
 
     <!-- Column totals row -->
     <tr>
       <td><strong>Total</strong></td>
-      <% let grandTotal = 0; %>
-      <% for (let key in colTotals) { %>
-        <% grandTotal += colTotals[key]; %>
-        <td><strong><%= colTotals[key] %></strong></td>
+      <% let grandTotal = 0; %> <% for (let key in colTotals) { %> <% grandTotal
+      += colTotals[key]; %>
+      <td><strong><%= colTotals[key] %></strong></td>
       <% } %>
       <td colspan="3"></td>
       <td><strong><%= grandTotal %></strong></td>
