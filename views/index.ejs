@@ -592,36 +592,56 @@
     const bulkModal = new bootstrap.Modal(modalEl);
     bulkModal.show();
 
-    // Focus input after modal is shown
     setTimeout(() => bulkAmountInput.focus(), 100);
 
     function applyBulk() {
-      const amount = parseInt(bulkAmountInput.value, 10);
-      if (isNaN(amount)) return; // ignore invalid input
+      const raw = bulkAmountInput.value.trim();
+
+      // Reject real numbers like 12.5 or -3.14
+      if (!/^-?\d+$/.test(raw)) {
+        return; // invalid input — do nothing
+      }
+
+      const amount = parseInt(raw, 10);
 
       const inputEl = document.getElementById(bulkTarget);
       let newVal = (parseInt(inputEl.value, 10) || 0) + amount;
-      if (newVal < 0) newVal = 0; // prevent negative total
-      inputEl.value = newVal;
 
+      if (newVal < 0) newVal = 0; // prevent going below zero
+
+      inputEl.value = newVal;
       bulkModal.hide();
     }
 
-    // Apply button click
-    const applyBtn = document.getElementById("applyBulk");
-    applyBtn.onclick = applyBulk;
+    // Apply button
+    document.getElementById("applyBulk").onclick = applyBulk;
 
-    // Key listener on the modal itself
+    // Enter key listener — ONCE per modal open
     modalEl.addEventListener(
       "keydown",
       function (e) {
         if (e.key === "Enter") {
-          e.preventDefault(); // prevent default form submission or weird behavior
+          e.preventDefault();
           applyBulk();
         }
       },
       { once: true }
-    ); // triggers once per modal open
+    );
+  }
+
+  function closeBulkModal() {
+    const modalEl = document.getElementById("bulkModal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
+  }
+  function closeBulkModal() {
+    const modalEl = document.getElementById("bulkModal");
+    if (!modalEl) return;
+
+    const modalInstance =
+      bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+
+    modalInstance.hide();
   }
 
   // Submit donation
