@@ -634,15 +634,6 @@
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) modal.hide();
   }
-  function closeBulkModal() {
-    const modalEl = document.getElementById("bulkModal");
-    if (!modalEl) return;
-
-    const modalInstance =
-      bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-
-    modalInstance.hide();
-  }
 
   // Submit donation
   $("#submitDonation").click(() => {
