@@ -9,6 +9,7 @@
       class="form-control fs-4 fw-bold text-center"
       placeholder="Enter Donor Name"
       autocomplete="off"
+      required
     />
   </div>
   <div class="col-3">
@@ -386,8 +387,7 @@
   <div class="col-lg-8 mx-auto">
     <p class="lead mb-4">
       Ensure you've entered the Donor's name. Double check form entries to
-      ensure they look reasonable and complete. Make sure you've got nothing
-      else to add and that you've noted any issues in the comments section.
+      ensure they look reasonable and complete.
     </p>
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <button
@@ -646,8 +646,16 @@
 
   // Submit donation
   $("#submitDonation").click(() => {
+    const donor = $("#donorName").val().trim();
+
+    if (!donor) {
+      alert("Please enter a donor name."); // blocks submission until filled
+      $("#donorName").focus();
+      return;
+    }
+
     const data = {
-      donor: $("#donorName").val(),
+      donor: donor,
       date: $("#dateDisplay").val(),
       boy02: parseInt($("#B02Count").val()),
       girl02: parseInt($("#G02Count").val()),
