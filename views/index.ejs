@@ -580,53 +580,53 @@
     $("#StockingCount").val(val > 0 ? val - 1 : 0);
   });
 
+  let bulkTarget = null;
+
+  // Create modal once
+  const modalEl = document.getElementById("bulkModal");
+  const bulkModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+  // Cache the input once
+  const bulkAmountInput = document.getElementById("bulkAmount");
+
+  // Focus input when modal is shown
+  modalEl.addEventListener("shown.bs.modal", () => {
+    bulkAmountInput.focus();
+  });
+
+  // Global applyBulk function
+  function applyBulk() {
+    const raw = bulkAmountInput.value.trim();
+
+    if (!/^-?\d+$/.test(raw)) return;
+
+    const amount = parseInt(raw, 10);
+
+    const inputEl = document.getElementById(bulkTarget);
+    let newVal = (parseInt(inputEl.value, 10) || 0) + amount;
+
+    if (newVal < 0) newVal = 0;
+
+    inputEl.value = newVal;
+    bulkModal.hide();
+  }
+
+  // Apply button — attach once
+  document.getElementById("applyBulk").addEventListener("click", applyBulk);
+
+  // Enter key — attach once
+  bulkAmountInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      applyBulk();
+    }
+  });
+
+  // Function to open and prep the modal
   function openBulkModal(targetId) {
     bulkTarget = targetId;
-
-    const bulkAmountInput = document.getElementById("bulkAmount");
     bulkAmountInput.value = "";
-
-    const modalEl = document.getElementById("bulkModal");
-    if (!modalEl) return;
-
-    const bulkModal = new bootstrap.Modal(modalEl);
     bulkModal.show();
-
-    setTimeout(() => bulkAmountInput.focus(), 100);
-
-    function applyBulk() {
-      const raw = bulkAmountInput.value.trim();
-
-      // Reject real numbers like 12.5 or -3.14
-      if (!/^-?\d+$/.test(raw)) {
-        return; // invalid input — do nothing
-      }
-
-      const amount = parseInt(raw, 10);
-
-      const inputEl = document.getElementById(bulkTarget);
-      let newVal = (parseInt(inputEl.value, 10) || 0) + amount;
-
-      if (newVal < 0) newVal = 0; // prevent going below zero
-
-      inputEl.value = newVal;
-      bulkModal.hide();
-    }
-
-    // Apply button
-    document.getElementById("applyBulk").onclick = applyBulk;
-
-    // Enter key listener — ONCE per modal open
-    modalEl.addEventListener(
-      "keydown",
-      function (e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          applyBulk();
-        }
-      },
-      { once: true }
-    );
   }
 
   function closeBulkModal() {
