@@ -62,12 +62,22 @@ app.get("/instructions", (req, res) => {
 
 app.get("/reports", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM donations");
-    const donations = result.rows; // rows from Postgres
+    // Determine sort column from query param, default to date
+    let sortColumn = "date";
+    if (req.query.sort === "donor") {
+      sortColumn = "LOWER(donor)"; // case-insensitive sort
+    } else if (req.query.sort === "date") {
+      sortColumn = "date";
+    }
 
-    res.render("reports", { donations });
+    // Query donations with the chosen sort
+    const result = await pool.query(`SELECT * FROM donations ORDER BY ${sortColumn}`);
+    const donations = result.rows;
+
+    // Pass current sort to template (optional, useful for UI)
+    res.render("reports", { donations, currentSort: req.query.sort || "date" });
   } catch (err) {
-    console.error("Error querying donations:", err);  // <--- log full error
+    console.error("Error querying donations:", err);
     res.send("Error loading donations. Check server logs.");
   }
 });

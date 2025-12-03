@@ -2,6 +2,12 @@
 
 <h2 class="mt-4 mb-3 text-center">Donation Reports</h2>
 
+<div class="mb-3 text-center">
+  <a href="/reports?sort=donor" class="btn <%= currentSort === 'donor' ? 'btn-primary' : 'btn-outline-primary' %>">Sort by Donor</a>
+  <a href="/reports?sort=date" class="btn <%= currentSort === 'date' ? 'btn-primary' : 'btn-outline-secondary' %>">Sort by Date</a>
+</div>
+
+
 <% let colTotals = { boy02: 0, girl02: 0, boy35: 0, girl35: 0, boy68: 0, girl68:
 0, boy911: 0, girl911: 0, boy1214: 0, girl1214: 0, book: 0, stuffie: 0, bike: 0,
 stocking: 0 }; %> <% function formatDate(dateStr) { return new
