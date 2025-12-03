@@ -1,8 +1,7 @@
 <%- include('partials/header', { pageTitle: "Home" }) %>
 
-<div class="row mt-3 g-3 align-items-stretch">
-  <div class="col-2"></div>
-  <div class="col-5">
+<div class="row mt-3 g-3 align-items-stretch justify-content-center">
+  <div class="col-12 col-md-5">
     <input
       id="donorName"
       type="text"
@@ -12,7 +11,7 @@
       required
     />
   </div>
-  <div class="col-3">
+  <div class="col-12 col-md-3">
     <input
       id="dateDisplay"
       type="text"
@@ -21,365 +20,37 @@
       autocomplete="off"
     />
   </div>
-  <div class="col-2"></div>
 </div>
-<div id="donorSuggestions" class="list-group"></div>
+<div id="donorSuggestions" class="list-group mt-2"></div>
 
-<div class="row pt-5 g-3 align-items-stretch">
-  <!-- Toys 0-2 Section -->
+<!-- Toy Buttons -->
+<div class="container mt-5">
+  <div class="row g-3">
+    <% const items = [
+      {label:'Boy 0-2', id:'B02'}, {label:'Girl 0-2', id:'G02'},
+      {label:'Boy 3-5', id:'B35'}, {label:'Girl 3-5', id:'G35'},
+      {label:'Boy 6-8', id:'B68'}, {label:'Girl 6-8', id:'G68'},
+      {label:'Boy 9-11', id:'B911'}, {label:'Girl 9-11', id:'G911'},
+      {label:'Boy 12-14', id:'B1214'}, {label:'Girl 12-14', id:'G1214'},
+      {label:'Book', id:'Book'}, {label:'Stocking Stuffer', id:'Stocking'},
+      {label:'Stuffed Animals', id:'Stuffie'}, {label:'Bicycle', id:'Bike'}
+    ] %>
 
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="B02Add">Boy 0 - 2</button>
+    <% items.forEach(item => { %>
+      <div class="col-6 col-sm-4 col-md-3 col-lg-3 d-grid">
+        <button class="btn btn-primary btn-lg" id="<%= item.id %>Add"><%= item.label %></button>
+      </div>
+      <div class="col-2 col-sm-2 col-md-1 d-grid">
+        <button class="btn btn-danger btn-lg" id="<%= item.id %>Remove">-</button>
+      </div>
+      <div class="col-2 col-sm-2 col-md-1 d-grid">
+        <button class="btn btn-secondary btn-lg" onclick="openBulkModal('<%= item.id %>Count')">Bulk</button>
+      </div>
+      <div class="col-2 col-sm-2 col-md-1 d-grid">
+        <input type="text" class="form-control btn-lg text-center" value="0" readonly id="<%= item.id %>Count" />
+      </div>
+    <% }) %>
   </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="B02Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('B02Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="B02Count"
-    />
-  </div>
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="G02Add">Girl 0 - 2</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="G02Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('G02Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="G02Count"
-    />
-  </div>
-
-  <!-- Toys 3-5 Section -->
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="B35Add">Boy 3 - 5</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="B35Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('B35Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="B35Count"
-    />
-  </div>
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="G35Add">Girl 3 - 5</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="G35Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('G35Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="G35Count"
-    />
-  </div>
-
-  <!-- Toys 6-8 Section -->
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="B68Add">Boy 6 - 8</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="B68Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('B68Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="B68Count"
-    />
-  </div>
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="G68Add">Girl 6 - 8</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="G68Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('G68Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="G68Count"
-    />
-  </div>
-
-  <!-- Toys 9-11 Section -->
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="B911Add">Boy 9 - 11</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="B911Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('B911Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="B911Count"
-    />
-  </div>
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="G911Add">Girl 9 - 11</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="G911Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('G911Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="G911Count"
-    />
-  </div>
-
-  <!-- Toys 12-14 Section -->
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="B1214Add">Boy 12 - 14</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="B1214Remove">-</button>
-  </div>
-
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('B1214Count')"
-    >
-      Bulk
-    </button>
-  </div>
-
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="B1214Count"
-    />
-  </div>
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="G1214Add">Girl 12 - 14</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="G1214Remove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('G1214Count')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="G1214Count"
-    />
-  </div>
-
-  <!-- Book and Stocking Stuffer Row -->
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="BookAdd">Book</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="BookRemove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('BookCount')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="BookCount"
-    />
-  </div>
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="StockingAdd">
-      Stocking Stuffer
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="StockingRemove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('StockingCount')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="StockingCount"
-    />
-  </div>
-
-  <!-- Stuffie and BicycleRow -->
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="StuffieAdd">
-      Stuffed Animals
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="StuffieRemove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('StuffieCount')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="StuffieCount"
-    />
-  </div>
-
-  <div class="col-3 d-grid">
-    <button class="btn btn-primary btn-lg" id="BikeAdd">Bicycle</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button class="btn btn-danger btn-lg" id="BikeRemove">-</button>
-  </div>
-  <div class="col-1 d-grid">
-    <button
-      class="btn btn-secondary btn-lg"
-      onclick="openBulkModal('BikeCount')"
-    >
-      Bulk
-    </button>
-  </div>
-  <div class="col-1 d-grid">
-    <input
-      type="text"
-      class="form-control btn-lg text-center"
-      value="0"
-      readonly
-      id="BikeCount"
-    />
-  </div>
-  <div class="col-4"></div>
 </div>
 
 <div class="px-4 my-5 text-center">
@@ -401,6 +72,7 @@
   </div>
 </div>
 
+<!-- Bulk Modal -->
 <div class="modal fade" id="bulkModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -418,16 +90,8 @@
         <input type="text" id="bulkAmount" class="form-control" value="" />
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          onclick="closeBulkModal()"
-        >
-          Cancel
-        </button>
-        <button type="button" class="btn btn-primary" id="applyBulk">
-          Apply
-        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeBulkModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" id="applyBulk">Apply</button>
       </div>
     </div>
   </div>
@@ -440,248 +104,68 @@
   // Auto-set date
   $("#dateDisplay").val(new Date().toLocaleDateString());
 
-  // Boy 0-2 increment/decrement
-  $("#B02Add").click(() => {
-    let val = parseInt($("#B02Count").val());
-    $("#B02Count").val(val + 1);
-  });
-  $("#B02Remove").click(() => {
-    let val = parseInt($("#B02Count").val());
-    $("#B02Count").val(val > 0 ? val - 1 : 0);
-  });
+  const items = [
+    'B02','G02','B35','G35','B68','G68','B911','G911','B1214','G1214',
+    'Book','Stocking','Stuffie','Bike'
+  ];
 
-  // Girl 0-2 increment/decrement
-  $("#G02Add").click(() => {
-    let val = parseInt($("#G02Count").val());
-    $("#G02Count").val(val + 1);
-  });
-  $("#G02Remove").click(() => {
-    let val = parseInt($("#G02Count").val());
-    $("#G02Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Boy 3-5 increment/decrement
-  $("#B35Add").click(() => {
-    let val = parseInt($("#B35Count").val());
-    $("#B35Count").val(val + 1);
-  });
-  $("#B35Remove").click(() => {
-    let val = parseInt($("#B35Count").val());
-    $("#B35Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Girl 3-5 increment/decrement
-  $("#G35Add").click(() => {
-    let val = parseInt($("#G35Count").val());
-    $("#G35Count").val(val + 1);
-  });
-  $("#G35Remove").click(() => {
-    let val = parseInt($("#G35Count").val());
-    $("#G35Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Boy 6-8 increment/decrement
-  $("#B68Add").click(() => {
-    let val = parseInt($("#B68Count").val());
-    $("#B68Count").val(val + 1);
-  });
-  $("#B68Remove").click(() => {
-    let val = parseInt($("#B68Count").val());
-    $("#B68Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Girl 6-8 increment/decrement
-  $("#G68Add").click(() => {
-    let val = parseInt($("#G68Count").val());
-    $("#G68Count").val(val + 1);
-  });
-  $("#G68Remove").click(() => {
-    let val = parseInt($("#G68Count").val());
-    $("#G68Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Boy 9-11 increment/decrement
-  $("#B911Add").click(() => {
-    let val = parseInt($("#B911Count").val());
-    $("#B911Count").val(val + 1);
-  });
-  $("#B911Remove").click(() => {
-    let val = parseInt($("#B911Count").val());
-    $("#B911Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Girl 9-11 increment/decrement
-  $("#G911Add").click(() => {
-    let val = parseInt($("#G911Count").val());
-    $("#G911Count").val(val + 1);
-  });
-  $("#G911Remove").click(() => {
-    let val = parseInt($("#G911Count").val());
-    $("#G911Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Boy 12-14 increment/decrement
-  $("#B1214Add").click(() => {
-    let val = parseInt($("#B1214Count").val());
-    $("#B1214Count").val(val + 1);
-  });
-  $("#B1214Remove").click(() => {
-    let val = parseInt($("#B1214Count").val());
-    $("#B1214Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Girl 12-14 increment/decrement
-  $("#G1214Add").click(() => {
-    let val = parseInt($("#G1214Count").val());
-    $("#G1214Count").val(val + 1);
-  });
-  $("#G1214Remove").click(() => {
-    let val = parseInt($("#G1214Count").val());
-    $("#G1214Count").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Book increment/decrement
-  $("#BookAdd").click(() => {
-    let val = parseInt($("#BookCount").val());
-    $("#BookCount").val(val + 1);
-  });
-  $("#BookRemove").click(() => {
-    let val = parseInt($("#BookCount").val());
-    $("#BookCount").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Stuffife increment/decrement
-  $("#StuffieAdd").click(() => {
-    let val = parseInt($("#StuffieCount").val());
-    $("#StuffieCount").val(val + 1);
-  });
-  $("#StuffieRemove").click(() => {
-    let val = parseInt($("#StuffieCount").val());
-    $("#StuffieCount").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Bike increment/decrement
-  $("#BikeAdd").click(() => {
-    let val = parseInt($("#BikeCount").val());
-    $("#BikeCount").val(val + 1);
-  });
-  $("#BikeRemove").click(() => {
-    let val = parseInt($("#BikeCount").val());
-    $("#BikeCount").val(val > 0 ? val - 1 : 0);
-  });
-
-  // Stocking Stuffer increment/decrement
-  $("#StockingAdd").click(() => {
-    let val = parseInt($("#StockingCount").val());
-    $("#StockingCount").val(val + 1);
-  });
-  $("#StockingRemove").click(() => {
-    let val = parseInt($("#StockingCount").val());
-    $("#StockingCount").val(val > 0 ? val - 1 : 0);
+  items.forEach(id => {
+    $("#" + id + "Add").click(() => {
+      let val = parseInt($("#" + id + "Count").val());
+      $("#" + id + "Count").val(val + 1);
+    });
+    $("#" + id + "Remove").click(() => {
+      let val = parseInt($("#" + id + "Count").val());
+      $("#" + id + "Count").val(val > 0 ? val - 1 : 0);
+    });
   });
 
   let bulkTarget = null;
-
-  // Create modal once
   const modalEl = document.getElementById("bulkModal");
   const bulkModal = bootstrap.Modal.getOrCreateInstance(modalEl);
-
-  // Cache the input once
   const bulkAmountInput = document.getElementById("bulkAmount");
 
-  // Focus input when modal is shown
   modalEl.addEventListener("shown.bs.modal", () => {
     bulkAmountInput.focus();
   });
 
-  // Global applyBulk function
   function applyBulk() {
     const raw = bulkAmountInput.value.trim();
-
     if (!/^-?\d+$/.test(raw)) return;
-
     const amount = parseInt(raw, 10);
-
     const inputEl = document.getElementById(bulkTarget);
     let newVal = (parseInt(inputEl.value, 10) || 0) + amount;
-
     if (newVal < 0) newVal = 0;
-
     inputEl.value = newVal;
     bulkModal.hide();
   }
 
-  // Apply button — attach once
   document.getElementById("applyBulk").addEventListener("click", applyBulk);
+  bulkAmountInput.addEventListener("keydown", (e) => { if(e.key==="Enter"){ e.preventDefault(); applyBulk(); }});
 
-  // Enter key — attach once
-  bulkAmountInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      applyBulk();
-    }
-  });
-
-  // Function to open and prep the modal
-  function openBulkModal(targetId) {
+  function openBulkModal(targetId){
     bulkTarget = targetId;
     bulkAmountInput.value = "";
     bulkModal.show();
   }
-
-  function closeBulkModal() {
-    const modalEl = document.getElementById("bulkModal");
+  function closeBulkModal(){
     const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) modal.hide();
+    if(modal) modal.hide();
   }
 
-  // Submit donation
   $("#submitDonation").click(() => {
     const donor = $("#donorName").val().trim();
+    if(!donor){ alert("Please enter a donor name."); $("#donorName").focus(); return; }
 
-    if (!donor) {
-      alert("Please enter a donor name."); // blocks submission until filled
-      $("#donorName").focus();
-      return;
-    }
+    const data = {};
+    items.forEach(id => { data[id.toLowerCase()] = parseInt($("#" + id + "Count").val()); });
+    data.donor = donor;
+    data.date = $("#dateDisplay").val();
 
-    const data = {
-      donor: donor,
-      date: $("#dateDisplay").val(),
-      boy02: parseInt($("#B02Count").val()),
-      girl02: parseInt($("#G02Count").val()),
-      boy35: parseInt($("#B35Count").val()),
-      girl35: parseInt($("#G35Count").val()),
-      boy68: parseInt($("#B68Count").val()),
-      girl68: parseInt($("#G68Count").val()),
-      boy911: parseInt($("#B911Count").val()),
-      girl911: parseInt($("#G911Count").val()),
-      boy1214: parseInt($("#B1214Count").val()),
-      girl1214: parseInt($("#G1214Count").val()),
-      book: parseInt($("#BookCount").val()),
-      stocking: parseInt($("#StockingCount").val()),
-      stuffie: parseInt($("#StuffieCount").val()),
-      bike: parseInt($("#BikeCount").val()),
-    };
-
-    $.post("/submit", data, (res) => {
+    $.post("/submit", data, (res)=>{
       alert("Donation submitted!");
-      // reset form
       $("#donorName").val("");
-      $("#B02Count").val(0);
-      $("#G02Count").val(0);
-      $("#B35Count").val(0);
-      $("#G35Count").val(0);
-      $("#B68Count").val(0);
-      $("#G68Count").val(0);
-      $("#B911Count").val(0);
-      $("#G911Count").val(0);
-      $("#B1214Count").val(0);
-      $("#G1214Count").val(0);
-      $("#BookCount").val(0);
-      $("#StockingCount").val(0);
-      $("#StuffieCount").val(0);
-      $("#BikeCount").val(0);
+      items.forEach(id=>$("#"+id+"Count").val(0));
     });
   });
 </script>
