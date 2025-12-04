@@ -158,7 +158,29 @@
     if(!donor){ alert("Please enter a donor name."); $("#donorName").focus(); return; }
 
     const data = {};
-    items.forEach(id => { data[id.toLowerCase()] = parseInt($("#" + id + "Count").val()); });
+    
+    // Correct mapping from front-end IDs to DB columns
+    const mapping = {
+      B02: "boy02",
+      G02: "girl02",
+      B35: "boy35",
+      G35: "girl35",
+      B68: "boy68",
+      G68: "girl68",
+      B911: "boy911",
+      G911: "girl911",
+      B1214: "boy1214",
+      G1214: "girl1214",
+      Book: "book",
+      Stocking: "stocking",
+      Stuffie: "stuffie",
+      Bike: "bike"
+    };
+
+    items.forEach(id => {
+      data[mapping[id]] = parseInt($("#" + id + "Count").val());
+    });
+
     data.donor = donor;
     data.date = $("#dateDisplay").val();
 
