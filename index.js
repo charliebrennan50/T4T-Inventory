@@ -8,122 +8,150 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-// Set EJS
+// EJS
 app.set("view engine", "ejs");
 
-// // Configure Postgres pool
+// Postgres
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgres://postgres:Meaghan1@localhost:5432/t4t_donations',
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
+// Create table on startup
 async function createTable() {
   const sql = `
     CREATE TABLE IF NOT EXISTS donations (
       id SERIAL PRIMARY KEY,
       donor TEXT,
       date DATE,
-      Boy02 INT DEFAULT 0,
-      Girl02 INT DEFAULT 0,
-      Boy35 INT DEFAULT 0,
-      Girl35 INT DEFAULT 0,
-      Boy68 INT DEFAULT 0,
-      Girl68 INT DEFAULT 0,
-      Boy911 INT DEFAULT 0,
-      Girl911 INT DEFAULT 0,
-      Boy1214 INT DEFAULT 0,
-      Girl1214 INT DEFAULT 0,
-      Book INT DEFAULT 0,
-      Stuffie INT DEFAULT 0,
-      Bike INT DEFAULT 0,
-      Stocking INT DEFAULT 0,
+      boy02 INT DEFAULT 0,
+      girl02 INT DEFAULT 0,
+      boy35 INT DEFAULT 0,
+      girl35 INT DEFAULT 0,
+      boy68 INT DEFAULT 0,
+      girl68 INT DEFAULT 0,
+      boy911 INT DEFAULT 0,
+      girl911 INT DEFAULT 0,
+      boy1214 INT DEFAULT 0,
+      girl1214 INT DEFAULT 0,
+      book INT DEFAULT 0,
+      stuffie INT DEFAULT 0,
+      bike INT DEFAULT 0,
+      stocking INT DEFAULT 0,
       inventory_person TEXT,
-      comments TEXT
+      comments TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW()
     );
   `;
   await pool.query(sql);
 }
-
-// Call it once at startup
 createTable().catch(err => console.error('Error creating table:', err));
 
-// ------------------ ROUTES ------------------ //
+// ------------------ ROUTES ------------------
 
-// GET home page
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", { success: !!req.query.success, error: !!req.query.error });
 });
 
-// GET instructions
-app.get("/instructions", (req, res) => {
-  res.render("instructions");
-});
+app.get("/instructions", (req, res) => res.render("instructions"));
 
-
-app.get("/reports", async (req, res) => {
+// Donor autocomplete endpoint
+app.get("/donor-search", async (req, res) => {
+  const q = (req.query.q || "").trim();
+  if (!q) return res.json([]);
   try {
-    // Determine sort column from query param, default to date
-    let sortColumn = "date";
-    if (req.query.sort === "donor") {
-      sortColumn = "LOWER(donor)"; // case-insensitive sort
-    } else if (req.query.sort === "date") {
-      sortColumn = "date";
-    }
-
-    // Query donations with the chosen sort
-    const result = await pool.query(`SELECT * FROM donations ORDER BY ${sortColumn}`);
-    const donations = result.rows;
-
-    // Pass current sort to template (optional, useful for UI)
-    res.render("reports", { donations, currentSort: req.query.sort || "date" });
+    const result = await pool.query(
+      `SELECT DISTINCT donor FROM donations WHERE donor ILIKE $1 ORDER BY donor LIMIT 10`,
+      [`%${q}%`]
+    );
+    res.json(result.rows);
   } catch (err) {
-    console.error("Error querying donations:", err);
-    res.send("Error loading donations. Check server logs.");
+    console.error(err);
+    res.status(500).json([]);
   }
 });
 
-
+// Submit donation
 app.post("/submit", async (req, res) => {
-  const newDonation = req.body;
-
-  // Map front-end fields to database columns
+  const d = req.body;
   const values = [
-    newDonation.donor,
-    newDonation.date,
-    newDonation.boy02,
-    newDonation.girl02,
-    newDonation.boy35,
-    newDonation.girl35,
-    newDonation.boy68,
-    newDonation.girl68,
-    newDonation.boy911,
-    newDonation.girl911,
-    newDonation.boy1214,
-    newDonation.girl1214,
-    newDonation.book,
-    newDonation.stuffie,
-    newDonation.bike,
-    newDonation.stocking
+    d.donor?.trim() || null,
+    d.date || null,
+    parseInt(d.boy02) || 0,
+    parseInt(d.girl02) || 0,
+    parseInt(d.boy35) || 0,
+    parseInt(d.girl35) || 0,
+    parseInt(d.boy68) || 0,
+    parseInt(d.girl68) || 0,
+    parseInt(d.boy911) || 0,
+    parseInt(d.girl911) || 0,
+    parseInt(d.boy1214) || 0,
+    parseInt(d.girl1214) || 0,
+    parseInt(d.book) || 0,
+    parseInt(d.stuffie) || 0,
+    parseInt(d.bike) || 0,
+    parseInt(d.stocking) || 0,
+    d.inventory_person?.trim() || null,
+    d.comments?.trim() || null
   ];
 
-  const insertQuery = `
-    INSERT INTO donations
-      (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
-       boy911, girl911, boy1214, girl1214, book, stuffie, bike,stocking)
-    VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
-    RETURNING *;
-  `;
+  const sql = `
+    INSERT INTO donations 
+    (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
+     boy911, girl911, boy1214, girl1214, book, stuffie, bike, stocking,
+     inventory_person, comments)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
+    RETURNING id`;
 
   try {
-    const result = await pool.query(insertQuery, values);
-    console.log("Inserted Donation:", result.rows[0]);
-    res.send("Donation received!");
+    await pool.query(sql, values);
+    res.redirect("/?success=1");
   } catch (err) {
-    console.error("Error inserting donation:", err);
-    res.status(500).send("Error inserting donation");
+    console.error("Insert error:", err);
+    res.redirect("/?error=1");
   }
 });
 
-// Start server
+// Reports page
+app.get("/reports", async (req, res) => {
+  try {
+    const validSorts = {
+      donor: "LOWER(donor) ASC",
+      date: "date DESC, id DESC"
+    };
+    const sort = validSorts[req.query.sort] || validSorts.date;
+    const result = await pool.query(`SELECT * FROM donations ORDER BY ${sort}`);
+    const donations = result.rows;
+
+    const totals = {
+      boy02: 0, girl02: 0, boy35: 0, girl35: 0,
+      boy68: 0, girl68: 0, boy911: 0, girl911: 0,
+      boy1214: 0, girl1214: 0, book: 0, stuffie: 0,
+      bike: 0, stocking: 0
+    };
+
+    donations.forEach(d => {
+      for (const key in totals) totals[key] += parseInt(d[key] || 0);
+    });
+    totals.grand = Object.values(totals).reduce((a, b) => a + b, 0);
+
+    res.render("reports", { donations, totals, currentSort: req.query.sort || "date" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading reports");
+  }
+});
+
+// CSV Export
+app.get("/reports.csv", async (req, res) => {
+  const { rows } = await pool.query("SELECT * FROM donations ORDER BY date DESC, id DESC");
+  let csv = "Donor,Date,Boy 0-2,Girl 0-2,Boy 3-5,Girl 3-5,Boy 6-8,Girl 6-8,Boy 9-11,Girl 9-11,Boy 12-14,Girl 12-14,Book,Stuffie,Bike,Stocking,Inventory Person,Comments\n";
+  rows.forEach(d => {
+    csv += `"${(d.donor||'').replace(/"/g, '""')}","${d.date}",${d.boy02||0},${d.girl02||0},${d.boy35||0},${d.girl35||0},${d.boy68||0},${d.girl68||0},${d.boy911||0},${d.girl911||0},${d.boy1214||0},${d.girl1214||0},${d.book||0},${d.stuffie||0},${d.bike||0},${d.stocking||0},"${(d.inventory_person||'').replace(/"/g,'""')}","${(d.comments||'').replace(/"/g,'""')}"\n`;
+  });
+  res.header("Content-Type", "text/csv");
+  res.attachment("toys-for-tots-donations.csv");
+  res.send(csv);
+});
+
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

@@ -1,31 +1,37 @@
-<%- include('partials/header', { pageTitle: "Home" }) %>
+<%- include('partials/header', { pageTitle: "T4T Donation Entry" }) %>
 
-<div class="row mt-3 g-3 align-items-stretch justify-content-center">
-  <div class="col-12 col-md-5">
-    <input
-      id="donorName"
-      type="text"
-      class="form-control fs-4 fw-bold text-center"
-      placeholder="Enter Donor Name"
-      autocomplete="off"
-      required
-    />
-  </div>
-  <div class="col-12 col-md-3">
-    <input
-      id="dateDisplay"
-      type="text"
-      class="form-control fs-4 fw-bold text-center"
-      placeholder="Date"
-      autocomplete="off"
-    />
-  </div>
+<% if (success) { %>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  Donation saved successfully!
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
-<div id="donorSuggestions" class="list-group mt-2"></div>
+<% } %>
 
-<!-- Toy Buttons -->
-<div class="container mt-5">
-  <div class="row g-3">
+<div class="container my-4">
+  <h2 class="text-center mb-4">Record a New Donation</h2>
+
+  <div class="row g-3 justify-content-center">
+    <div class="col-12 col-md-5">
+      <input id="donorName" type="text" class="form-control form-control-lg text-center fw-bold"
+             placeholder="Donor Name (required)" autocomplete="off" required>
+      <div id="donorSuggestions" class="list-group position-absolute z-3 w-100 mt-1" style="max-height:200px;overflow-y:auto;display:none;"></div>
+    </div>
+    <div class="col-12 col-md-3">
+      <input id="dateDisplay" type="text" class="form-control form-control-lg text-center fw-bold"
+             readonly>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <input id="inventoryPerson" type="text" class="form-control" placeholder="Your Name (optional)">
+    </div>
+    <div class="col-md-6">
+      <input id="comments" type="text" class="form-control" placeholder="Comments / Notes (optional)">
+    </div>
+  </div>
+
+  <div class="row mt-5 g-3">
     <% const items = [
       {label:'Boy 0-2', id:'B02'}, {label:'Girl 0-2', id:'G02'},
       {label:'Boy 3-5', id:'B35'}, {label:'Girl 3-5', id:'G35'},
@@ -33,61 +39,50 @@
       {label:'Boy 9-11', id:'B911'}, {label:'Girl 9-11', id:'G911'},
       {label:'Boy 12-14', id:'B1214'}, {label:'Girl 12-14', id:'G1214'},
       {label:'Book', id:'Book'}, {label:'Stocking Stuffer', id:'Stocking'},
-      {label:'Stuffed Animals', id:'Stuffie'}, {label:'Bicycle', id:'Bike'}
+      {label:'Stuffed Animal', id:'Stuffie'}, {label:'Bicycle', id:'Bike'}
     ] %>
-
     <% items.forEach(item => { %>
-      <div class="col-6 col-sm-4 col-md-3 col-lg-3 d-grid">
-        <button class="btn btn-primary btn-lg" id="<%= item.id %>Add"><%= item.label %></button>
-      </div>
-      <div class="col-2 col-sm-2 col-md-1 d-grid">
-        <button class="btn btn-danger btn-lg" id="<%= item.id %>Remove">-</button>
-      </div>
-      <div class="col-2 col-sm-2 col-md-1 d-grid">
-        <button class="btn btn-secondary btn-lg" onclick="openBulkModal('<%= item.id %>Count')">Bulk</button>
-      </div>
-      <div class="col-2 col-sm-2 col-md-1 d-grid">
-        <input type="text" class="form-control btn-lg text-center" value="0" readonly id="<%= item.id %>Count" />
-      </div>
-    <% }) %>
+    <!-- Button label -->
+    <div class="col-6 col-sm-4 col-md-3 col-lg-3 d-grid">
+      <button class="btn btn-primary btn-lg" id="<%= item.id %>Add"><%= item.label %></button>
+    </div>
+    <!-- − button -->
+    <div class="col-2 col-sm-2 col-md-1 col-lg-1 d-grid">
+      <button class="btn btn-danger btn-lg" id="<%= item.id %>Remove">−</button>
+    </div>
+    <!-- Bulk button -->
+    <div class="col-2 col-sm-2 col-md-1 col-lg-1 d-grid">
+      <button class="btn btn-secondary btn-lg" onclick="openBulkModal('<%= item.id %>Count')">Bulk</button>
+    </div>
+    <!-- Counter -->
+    <div class="col-2 col-sm-2 col-md-1 col-lg-1 d-grid">
+      <input type="text" class="form-control form-control-lg text-center fw-bold" value="0" readonly id="<%= item.id %>Count">
+    </div>
+  <% }) %>
+</div>
+
+  <div class="text-center mt-5">
+    <button id="submitDonation" class="btn btn-success btn-lg px-5">Submit Donation</button>
   </div>
 </div>
 
-<div class="px-4 my-5 text-center">
-  <h2 class="display-6 fw-bold text-body-emphasis">Final Check</h2>
-  <div class="col-lg-8 mx-auto">
-    <p class="lead mb-4">
-      Ensure you've entered the Donor's name. Double check form entries to
-      ensure they look reasonable and complete.
-    </p>
-    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-      <button
-        type="button"
-        class="btn btn-primary btn-lg px-4 gap-3"
-        id="submitDonation"
-      >
-        Submit
-      </button>
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:1100">
+  <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body fw-bold">Donation submitted!</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
     </div>
   </div>
 </div>
 
 <!-- Bulk Modal -->
-<div class="modal fade" id="bulkModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="bulkModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Bulk Add</h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          onclick="closeBulkModal()"
-        ></button>
-      </div>
+      <div class="modal-header"><h5 class="modal-title">Bulk Add</h5></div>
       <div class="modal-body">
-        <label for="bulkAmount">Quantity:</label>
-        <input type="text" id="bulkAmount" class="form-control" value="" />
+        <input type="text" id="bulkAmount" class="form-control" placeholder="Quantity (can be negative)">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="closeBulkModal()">Cancel</button>
@@ -99,96 +94,104 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-  // Auto-set date
   $("#dateDisplay").val(new Date().toLocaleDateString());
 
-  const items = [
-    'B02','G02','B35','G35','B68','G68','B911','G911','B1214','G1214',
-    'Book','Stocking','Stuffie','Bike'
-  ];
-
+  const items = ['B02','G02','B35','G35','B68','G68','B911','G911','B1214','G1214','Book','Stocking','Stuffie','Bike'];
   items.forEach(id => {
-    $("#" + id + "Add").click(() => {
-      let val = parseInt($("#" + id + "Count").val());
-      $("#" + id + "Count").val(val + 1);
-    });
-    $("#" + id + "Remove").click(() => {
-      let val = parseInt($("#" + id + "Count").val());
-      $("#" + id + "Count").val(val > 0 ? val - 1 : 0);
+    $(`#${id}Add`).click(() => $(`#${id}Count`).val(parseInt($(`#${id}Count`).val()) + 1));
+    $(`#${id}Remove`).click(() => {
+      let v = parseInt($(`#${id}Count`).val());
+      $(`#${id}Count`).val(v > 0 ? v - 1 : 0);
     });
   });
-
+  // ——— BULK MODAL ——— (now supports Enter and Esc!)
   let bulkTarget = null;
-  const modalEl = document.getElementById("bulkModal");
-  const bulkModal = bootstrap.Modal.getOrCreateInstance(modalEl);
-  const bulkAmountInput = document.getElementById("bulkAmount");
+  const bulkModalEl = document.getElementById('bulkModal');
+  const bulkModal = new bootstrap.Modal(bulkModalEl);
+  const bulkAmountInput = document.getElementById('bulkAmount');
 
-  modalEl.addEventListener("shown.bs.modal", () => {
+  // Focus the input when modal opens
+  bulkModalEl.addEventListener('shown.bs.modal', () => {
     bulkAmountInput.focus();
+    bulkAmountInput.select();
   });
+
+  // Apply on Enter
+  bulkAmountInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      applyBulk();
+    }
+    if (e.key === 'Escape') {
+      bulkModal.hide();
+    }
+  });
+
+  // Apply button
+  document.getElementById('applyBulk').onclick = applyBulk;
 
   function applyBulk() {
-    const raw = bulkAmountInput.value.trim();
-    if (!/^-?\d+$/.test(raw)) return;
-    const amount = parseInt(raw, 10);
-    const inputEl = document.getElementById(bulkTarget);
-    let newVal = (parseInt(inputEl.value, 10) || 0) + amount;
+    const amt = parseInt(bulkAmountInput.value) || 0;
+    const el = document.getElementById(bulkTarget);
+    let newVal = (parseInt(el.value) || 0) + amt;
     if (newVal < 0) newVal = 0;
-    inputEl.value = newVal;
+    el.value = newVal;
     bulkModal.hide();
   }
 
-  document.getElementById("applyBulk").addEventListener("click", applyBulk);
-  bulkAmountInput.addEventListener("keydown", (e) => { if(e.key==="Enter"){ e.preventDefault(); applyBulk(); }});
-
-  function openBulkModal(targetId){
-    bulkTarget = targetId;
-    bulkAmountInput.value = "";
+  function openBulkModal(id) {
+    bulkTarget = id;
+    bulkAmountInput.value = '';
     bulkModal.show();
   }
-  function closeBulkModal(){
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if(modal) modal.hide();
+
+  function closeBulkModal() {
+    bulkModal.hide();
   }
 
+  // Donor autocomplete
+  let donorTimeout;
+  $("#donorName").on("input", function() {
+    clearTimeout(donorTimeout);
+    const q = this.value.trim();
+    if (q.length < 2) { $("#donorSuggestions").hide(); return; }
+    donorTimeout = setTimeout(() => {
+      $.get("/donor-search?q=" + encodeURIComponent(q), data => {
+        const $s = $("#donorSuggestions").empty();
+        if (!data.length) { $s.hide(); return; }
+        data.forEach(d => {
+          $("<a>").addClass("list-group-item list-group-item-action")
+                  .text(d.donor)
+                  .click(() => { $("#donorName").val(d.donor); $s.hide(); })
+                  .appendTo($s);
+        });
+        $s.show();
+      });
+    }, 300);
+  });
+
+  // Submit
   $("#submitDonation").click(() => {
-    const donor = $("#donorName").val().trim();
-    if(!donor){ alert("Please enter a donor name."); $("#donorName").focus(); return; }
-
-    const data = {};
-    
-    // Correct mapping from front-end IDs to DB columns
+    if (!$("#donorName").val().trim()) { alert("Please enter a donor name"); return; }
     const mapping = {
-      B02: "boy02",
-      G02: "girl02",
-      B35: "boy35",
-      G35: "girl35",
-      B68: "boy68",
-      G68: "girl68",
-      B911: "boy911",
-      G911: "girl911",
-      B1214: "boy1214",
-      G1214: "girl1214",
-      Book: "book",
-      Stocking: "stocking",
-      Stuffie: "stuffie",
-      Bike: "bike"
+      B02:"boy02", G02:"girl02", B35:"boy35", G35:"girl35",
+      B68:"boy68", G68:"girl68", B911:"boy911", G911:"girl911",
+      B1214:"boy1214", G1214:"girl1214", Book:"book", Stocking:"stocking",
+      Stuffie:"stuffie", Bike:"bike"
     };
-
-    items.forEach(id => {
-      data[mapping[id]] = parseInt($("#" + id + "Count").val());
-    });
-
-    data.donor = donor;
+    const data = { inventory_person: $("#inventoryPerson").val().trim(), comments: $("#comments").val().trim() };
+    items.forEach(id => data[mapping[id]] = parseInt($(`#${id}Count`).val()) || 0);
+    data.donor = $("#donorName").val().trim();
     data.date = $("#dateDisplay").val();
 
-    $.post("/submit", data, (res)=>{
-      alert("Donation submitted!");
-      $("#donorName").val("");
-      items.forEach(id=>$("#"+id+"Count").val(0));
-    });
+    $.post("/submit", data)
+      .done(() => {
+        bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast')).show();
+        $("#donorName,#inventoryPerson,#comments").val("");
+        items.forEach(id => $(`#${id}Count`).val(0));
+      })
+      .fail(() => alert("Something went wrong – check the console"));
   });
 </script>
 
