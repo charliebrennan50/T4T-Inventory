@@ -45,7 +45,8 @@ async function createTable() {
   `;
   await pool.query(sql);
 }
-createTable().catch(err => console.error('Error creating table:', err));
+// Only needed first time. Don't want it overwriting database.
+// createTable().catch(err => console.error('Error creating table:', err));
 
 // ------------------ ROUTES ------------------
 
