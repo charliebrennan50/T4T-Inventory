@@ -205,6 +205,47 @@ app.get("/api/reports/totals-by-date", async (req, res) => {
   }
 });
 
+app.get("/api/reports/totals-by-donor", async (req, res) => {
+  try {
+    const result = await pool.query(`
+SELECT
+  donor,
+  COUNT(*) AS num_donations,
+  SUM(boy02 + girl02 + boy35 + girl35 + boy68 + girl68 + boy911 + girl911 + boy1214 + girl1214 + bike + stuffie) AS total_toys,
+  SUM(book) AS total_books,
+  SUM(stocking) AS total_stocking
+FROM donations
+GROUP BY donor
+ORDER BY num_donations DESC;
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Totals by donor error:", err);
+    res.status(500).json({ error: "Failed to load report" });
+  }
+});
+
+app.get("/api/reports/totals-by-event", async (req, res) => {
+  try {
+    const result = await pool.query(`
+SELECT
+  donor,
+  COUNT(*) AS num_donations,
+  SUM(boy02 + girl02 + boy35 + girl35 + boy68 + girl68 + boy911 + girl911 + boy1214 + girl1214 + bike + stuffie) AS total_toys,
+  SUM(book) AS total_books,
+  SUM(stocking) AS total_stocking
+FROM donations
+WHERE donor ILIKE '%event%'
+GROUP BY donor
+ORDER BY num_donations DESC;
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Totals by donor error:", err);
+    res.status(500).json({ error: "Failed to load report" });
+  }
+});
+
 // CSV Export
 app.get("/table.csv", async (req, res) => {
   const { rows } = await pool.query(
