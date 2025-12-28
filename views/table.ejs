@@ -1,0 +1,63 @@
+<%- include('partials/header', { pageTitle: "Donation Reports" }) %>
+
+<div class="container my-5">
+  <h1 class="text-center mb-4">Toys for Tots – Donation Report</h1>
+
+  <!-- Summary Cards -->
+  <div class="row mb-4 g-3 text-center">
+    <div class="col-md-3"><div class="card bg-success text-white"><div class="card-body"><h3><%= totals.grand.toLocaleString() %></h3><p>Total Toys</p></div></div></div>
+    <div class="col-md-3"><div class="card bg-primary text-white"><div class="card-body"><h3><%= donations.length %></h3><p>Donations</p></div></div></div>
+    <div class="col-md-3"><div class="card bg-info text-white"><div class="card-body"><h3><%= totals.bike %></h3><p>Bicycles</p></div></div></div>
+    <div class="col-md-3"><div class="card bg-warning text-white"><div class="card-body"><h3><%= totals.book %></h3><p>Books</p></div></div></div>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <div>
+      <a href="/table?sort=date" class="btn <%= currentSort==='date' ? 'btn-primary' : 'btn-outline-primary' %>">Date (Newest)</a>
+      <a href="/table?sort=donor" class="btn <%= currentSort==='donor' ? 'btn-primary' : 'btn-outline-primary' %>">Donor A-Z</a>
+    </div>
+    <a href="/table.csv" class="btn btn-success">Export CSV</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Donor</th><th>Date</th>
+          <th>B 0-2</th><th>G 0-2</th><th>B 3-5</th><th>G 3-5</th>
+          <th>B 6-8</th><th>G 6-8</th><th>B 9-11</th><th>G 9-11</th>
+          <th>B 12-14</th><th>G 12-14</th><th>Book</th><th>Stuffie</th><th>Bike</th><th>Stuffer</th><th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% donations.forEach(d => { %>
+          <% const rowTotal = (d.boy02||0)+(d.girl02||0)+(d.boy35||0)+(d.girl35||0)+(d.boy68||0)+(d.girl68||0)+(d.boy911||0)+(d.girl911||0)+(d.boy1214||0)+(d.girl1214||0)+(d.book||0)+(d.stuffie||0)+(d.bike||0)+(d.stocking||0); %>
+          <tr>
+            <td><strong><%= d.donor || 'Anonymous' %></strong></td>
+            <td><%= new Date(d.date).toLocaleDateString() %></td>
+            <td class="text-center"><%= d.boy02||0 %></td><td class="text-center"><%= d.girl02||0 %></td>
+            <td class="text-center"><%= d.boy35||0 %></td><td class="text-center"><%= d.girl35||0 %></td>
+            <td class="text-center"><%= d.boy68||0 %></td><td class="text-center"><%= d.girl68||0 %></td>
+            <td class="text-center"><%= d.boy911||0 %></td><td class="text-center"><%= d.girl911||0 %></td>
+            <td class="text-center"><%= d.boy1214||0 %></td><td class="text-center"><%= d.girl1214||0 %></td>
+            <td class="text-center"><%= d.book||0 %></td><td class="text-center"><%= d.stuffie||0 %></td>
+            <td class="text-center fw-bold"><%= d.bike||0 %></td><td class="text-center"><%= d.stocking||0 %></td>
+            <td class="text-center fw-bold"><%= rowTotal %></td>
+          </tr>
+        <% }) %>
+        <tr class="table-success fw-bold fs-5">
+          <td colspan="2">GRAND TOTAL</td>
+          <td class="text-center"><%= totals.boy02 %></td><td class="text-center"><%= totals.girl02 %></td>
+          <td class="text-center"><%= totals.boy35 %></td><td class="text-center"><%= totals.girl35 %></td>
+          <td class="text-center"><%= totals.boy68 %></td><td class="text-center"><%= totals.girl68 %></td>
+          <td class="text-center"><%= totals.boy911 %></td><td class="text-center"><%= totals.girl911 %></td>
+          <td class="text-center"><%= totals.boy1214 %></td><td class="text-center"><%= totals.girl1214 %></td>
+          <td class="text-center"><%= totals.book %></td><td class="text-center"><%= totals.stuffie %></td>
+          <td class="text-center"><%= totals.bike %></td><td class="text-center"><%= totals.stocking %></td>
+          <td class="text-center"><%= totals.grand.toLocaleString() %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('partials/footer') %>
