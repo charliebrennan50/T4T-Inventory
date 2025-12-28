@@ -1,51 +1,110 @@
 <%- include('partials/header', { pageTitle: "Instructions" }) %>
 
+<!-- Reports page HTML -->
+<h2>Donation Totals by Date</h2>
+<div id="report-toys"></div>
 
-  <h1>Donation Totals by Date</h1>
+<h2>Donation Chart</h2>
+<div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+  <canvas id="donationChart" width="600" height="300"></canvas>
+</div>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>0–2</th>
-        <th>3–5</th>
-        <th>6–8</th>
-        <th>9–11</th>
-        <th>12–14</th>
-        <th>Books</th>
-        <th>Stuffies</th>
-        <th>Bikes</th>
-        <th>Stockings</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="report-body"></tbody>
-  </table>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  async function loadReports() {
+    const tableDiv = document.getElementById('report-toys');
+    const chartCanvas = document.getElementById('donationChart');
 
-  <script>
-    async function loadReport() {
-      const res = await fetch("/api/reports/totals-by-date");
-      const data = await res.json();
-
-      const tbody = document.getElementById("report-body");
-      tbody.innerHTML = data.map(r => `
-        <tr>
-          <td>${r.date}</td>
-          <td>${r.age_0_2}</td>
-          <td>${r.age_3_5}</td>
-          <td>${r.age_6_8}</td>
-          <td>${r.age_9_11}</td>
-          <td>${r.age_12_14}</td>
-          <td>${r.books}</td>
-          <td>${r.stuffies}</td>
-          <td>${r.bikes}</td>
-          <td>${r.stockings}</td>
-          <td><strong>${r.total_items}</strong></td>
-        </tr>
-      `).join("");
+    if (!tableDiv || !chartCanvas) {
+      console.error('Required DOM elements not found.');
+      return;
     }
 
-    loadReport();
-  </script>
+    let totalsByDate = [];
+    try {
+      totalsByDate = await fetch('/api/reports/totals-by-date')
+        .then(r => r.json());
+    } catch (err) {
+      console.error('Failed to fetch totals-by-date:', err);
+    }
 
-<%-include('partials/footer') %>
+    if (!Array.isArray(totalsByDate) || totalsByDate.length === 0) {
+      tableDiv.innerHTML = '<p>No data available.</p>';
+      return;
+    }
+
+    // Render table with formatted dates
+    tableDiv.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Age 0-2</th>
+            <th>Age 3-5</th>
+            <th>Age 6-8</th>
+            <th>Age 9-11</th>
+            <th>Age 12-14</th>
+            <th>Books</th>
+            <th>Stuffies</th>
+            <th>Bikes</th>
+            <th>Stockings</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${totalsByDate.map(row => {
+            const d = new Date(row.date);
+            const formattedDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            return `
+              <tr>
+                <td>${formattedDate}</td>
+                <td>${row.age_0_2}</td>
+                <td>${row.age_3_5}</td>
+                <td>${row.age_6_8}</td>
+                <td>${row.age_9_11}</td>
+                <td>${row.age_12_14}</td>
+                <td>${row.books}</td>
+                <td>${row.stuffies}</td>
+                <td>${row.bikes}</td>
+                <td>${row.stockings}</td>
+                <td>${row.total_items}</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+
+    // Render chart (bar chart)
+    const labels = totalsByDate.map(row => {
+      const d = new Date(row.date);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    });
+    const totals = totalsByDate.map(row => row.total_items);
+
+    new Chart(chartCanvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Total Donations',
+          data: totals,
+          borderColor: 'blue',
+          backgroundColor: 'rgba(54,162,235,0.6)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          x: { title: { display: true, text: 'Date' } },
+          y: { title: { display: true, text: 'Total Donations' }, beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  loadReports();
+});
+</script>
+
