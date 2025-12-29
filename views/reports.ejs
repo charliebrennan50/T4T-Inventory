@@ -1,43 +1,85 @@
 <%- include('partials/header', { pageTitle: "Instructions" }) %>
 
 <!-- Reports page HTML -->
-<h2>Donation Totals by Date</h2>
-<div id="report-toys"></div>
 
-<h2>Donation Chart</h2>
-<div style="max-width: 800px; margin: 0 auto; padding: 20px">
+<h3
+  role="button"
+  data-bs-toggle="collapse"
+  data-bs-target="#toyTotals"
+  class="mb-3"
+>
+  Donation Totals by Date
+</h3>
+<div class="collapse" id="toyTotals">
+  <div id="report-toys"></div>
+</div>
+
+<h3
+  role="button"
+  data-bs-toggle="collapse"
+  data-bs-target="#totalsChart"
+  class="mb-3"
+>
+  Donation Totals Chart
+</h3>
+<div
+  class="collapse"
+  id="totalsChart"
+  style="max-width: 800px; margin: 0 auto; padding: 20px"
+>
   <canvas id="donationChart" width="600" height="300"></canvas>
 </div>
 
+<h3
+  role="button"
+  data-bs-toggle="collapse"
+  data-bs-target="#donorTotals"
+  class="mb-3"
+>
+  Donation Totals by Donor
+</h3>
+<div class="collapse" id="donorTotals">
+  <div id="report-donors"></div>
+</div>
+
+<h3
+  role="button"
+  data-bs-toggle="collapse"
+  data-bs-target="#eventTotals"
+  class="mb-3"
+>
+  Donation Totals by Event
+</h3>
+<div class="collapse" id="eventTotals">
+  <div id="event-donors"></div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    async function loadReports() {
-      const tableDiv = document.getElementById("report-toys");
-      const chartCanvas = document.getElementById("donationChart");
+document.addEventListener("DOMContentLoaded", async () => {
+  // --- Totals by Date ---
+  async function loadReports() {
+    const tableDiv = document.getElementById("report-toys");
+    const chartCanvas = document.getElementById("donationChart");
 
-      if (!tableDiv || !chartCanvas) {
-        console.error("Required DOM elements not found.");
-        return;
-      }
+    if (!tableDiv || !chartCanvas) return;
 
-      let totalsByDate = [];
-      try {
-        totalsByDate = await fetch("/api/reports/totals-by-date").then((r) =>
-          r.json()
-        );
-      } catch (err) {
-        console.error("Failed to fetch totals-by-date:", err);
-      }
+    let totalsByDate = [];
+    try {
+      totalsByDate = await fetch("/api/reports/totals-by-date").then(r => r.json());
+    } catch (err) {
+      console.error("Failed to fetch totals-by-date:", err);
+    }
 
-      if (!Array.isArray(totalsByDate) || totalsByDate.length === 0) {
-        tableDiv.innerHTML = "<p>No data available.</p>";
-        return;
-      }
+    if (!Array.isArray(totalsByDate) || totalsByDate.length === 0) {
+      tableDiv.innerHTML = "<p>No data available.</p>";
+      return;
+    }
 
-      // Render table with formatted dates
-      tableDiv.innerHTML = `
-      <table>
+    // Render table
+    tableDiv.innerHTML = `
+      <table class="table table-striped table-bordered">
         <thead>
           <tr>
             <th>Date</th>
@@ -54,13 +96,10 @@
           </tr>
         </thead>
         <tbody>
-          ${totalsByDate
-            .map((row) => {
-              const d = new Date(row.date);
-              const formattedDate = `${d.getFullYear()}-${String(
-                d.getMonth() + 1
-              ).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-              return `
+          ${totalsByDate.map(row => {
+            const d = new Date(row.date);
+            const formattedDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+            return `
               <tr>
                 <td>${formattedDate}</td>
                 <td>${row.age_0_2}</td>
@@ -75,77 +114,59 @@
                 <td>${row.total_items}</td>
               </tr>
             `;
-            })
-            .join("")}
+          }).join("")}
         </tbody>
       </table>
     `;
 
-      // Render chart (bar chart)
-      const labels = totalsByDate.map((row) => {
-        const d = new Date(row.date);
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
-          2,
-          "0"
-        )}-${String(d.getDate()).padStart(2, "0")}`;
-      });
-      const totals = totalsByDate.map((row) => row.total_items);
+    // Render chart
+    const labels = totalsByDate.map(row => {
+      const d = new Date(row.date);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    });
+    const totals = totalsByDate.map(row => row.total_items);
 
-      new Chart(chartCanvas.getContext("2d"), {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [
-            {
-              label: "Total Toys",
-              data: totals,
-              borderColor: "blue",
-              backgroundColor: "rgba(54,162,235,0.6)",
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            x: { title: { display: true, text: "Date" } },
-            y: {
-              title: { display: true, text: "Total Toys" },
-              beginAtZero: true,
-            },
-          },
-        },
-      });
+    new Chart(chartCanvas.getContext("2d"), {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Total Toys",
+          data: totals,
+          borderColor: "blue",
+          backgroundColor: "rgba(54,162,235,0.6)",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          x: { title: { display: true, text: "Date" } },
+          y: { title: { display: true, text: "Total Toys" }, beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  loadReports();
+
+  // --- Totals by Donor ---
+  async function loadDonorReport() {
+    const tableDiv = document.getElementById("report-donors");
+    if (!tableDiv) return;
+
+    let totalsByDonor = [];
+    try {
+      totalsByDonor = await fetch("/api/reports/totals-by-donor").then(r => r.json());
+    } catch (err) {
+      console.error("Failed to fetch totals-by-donor:", err);
     }
 
-    loadReports();
-  });
-</script>
+    if (!Array.isArray(totalsByDonor) || totalsByDonor.length === 0) {
+      tableDiv.innerHTML = "<p>No data available.</p>";
+      return;
+    }
 
-<h2>Donation Totals by Donor</h2>
-<div id="report-donors"></div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    async function loadDonorReport() {
-      const tableDiv = document.getElementById("report-donors");
-      if (!tableDiv) return;
-
-      let totalsByDonor = [];
-      try {
-        totalsByDonor = await fetch("/api/reports/totals-by-donor").then((r) =>
-          r.json()
-        );
-      } catch (err) {
-        console.error("Failed to fetch totals-by-donor:", err);
-      }
-
-      if (!Array.isArray(totalsByDonor) || totalsByDonor.length === 0) {
-        tableDiv.innerHTML = "<p>No data available.</p>";
-        return;
-      }
-
-      // Render table
-      tableDiv.innerHTML = `
+    tableDiv.innerHTML = `
       <table class="table table-striped table-bordered">
         <thead>
           <tr>
@@ -157,9 +178,7 @@
           </tr>
         </thead>
         <tbody>
-          ${totalsByDonor
-            .map(
-              (row) => `
+          ${totalsByDonor.map(row => `
             <tr>
               <td>${row.donor}</td>
               <td>${row.num_donations}</td>
@@ -167,43 +186,32 @@
               <td>${row.total_books}</td>
               <td>${row.total_stocking}</td>
             </tr>
-          `
-            )
-            .join("")}
+          `).join("")}
         </tbody>
       </table>
     `;
+  }
+
+  loadDonorReport();
+
+  // --- Totals by Event ---
+  async function loadEventReport() {
+    const tableDiv = document.getElementById("event-donors");
+    if (!tableDiv) return;
+
+    let totalsByEvent = [];
+    try {
+      totalsByEvent = await fetch("/api/reports/totals-by-event").then(r => r.json());
+    } catch (err) {
+      console.error("Failed to fetch totals-by-event:", err);
     }
 
-    loadDonorReport();
-  });
-</script>
+    if (!Array.isArray(totalsByEvent) || totalsByEvent.length === 0) {
+      tableDiv.innerHTML = "<p>No data available.</p>";
+      return;
+    }
 
-<h2>Donation Totals by Event</h2>
-<div id="event-donors"></div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    async function loadEventReport() {
-      const tableDiv = document.getElementById("event-donors");
-      if (!tableDiv) return;
-
-      let totalsByEvent = [];
-      try {
-        totalsByEvent = await fetch("/api/reports/totals-by-event").then((r) =>
-          r.json()
-        );
-      } catch (err) {
-        console.error("Failed to fetch totals-by-donor:", err);
-      }
-
-      if (!Array.isArray(totalsByEvent) || totalsByEvent.length === 0) {
-        tableDiv.innerHTML = "<p>No data available.</p>";
-        return;
-      }
-
-      // Render table
-      tableDiv.innerHTML = `
+    tableDiv.innerHTML = `
       <table class="table table-striped table-bordered">
         <thead>
           <tr>
@@ -215,9 +223,7 @@
           </tr>
         </thead>
         <tbody>
-          ${totalsByEvent
-            .map(
-              (row) => `
+          ${totalsByEvent.map(row => `
             <tr>
               <td>${row.donor}</td>
               <td>${row.num_donations}</td>
@@ -225,14 +231,12 @@
               <td>${row.total_books}</td>
               <td>${row.total_stocking}</td>
             </tr>
-          `
-            )
-            .join("")}
+          `).join("")}
         </tbody>
       </table>
     `;
-    }
+  }
 
-    loadEventReport();
-  });
+  loadEventReport();
+});
 </script>
