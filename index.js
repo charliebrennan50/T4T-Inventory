@@ -239,7 +239,7 @@ SELECT
   SUM(boy02 + girl02 + boy35 + girl35 + boy68 + girl68 + boy911 + girl911 + boy1214 + girl1214 + bike + stuffie) AS total_toys,
   SUM(book) AS total_books,
   SUM(stocking) AS total_stocking
-FROM iventory.donations
+FROM inventory.donations
 WHERE donor ILIKE '%event%'
 GROUP BY donor
 ORDER BY num_donations DESC;
