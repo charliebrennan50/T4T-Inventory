@@ -15,14 +15,17 @@ app.set("view engine", "ejs");
 const pool = new Pool({
   connectionString:
     process.env.DATABASE_URL ||
-    "postgres://postgres:Meaghan1@localhost:5432/t4t_donations",
+    "postgres://postgres:Meaghan1@localhost:5432/t4t_combined",
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
 
 // Create table on startup
 async function createTable() {
   const sql = `
-    CREATE TABLE IF NOT EXISTS donations (
+
+      CREATE SCHEMA IF NOT EXISTS inventory;
+
+    CREATE TABLE IF NOT EXISTS inventory.donations (
       id SERIAL PRIMARY KEY,
       donor TEXT,
       date DATE,
@@ -72,7 +75,7 @@ app.get("/donor-search", async (req, res) => {
   if (!q) return res.json([]);
   try {
     const result = await pool.query(
-      `SELECT DISTINCT donor FROM donations WHERE donor ILIKE $1 ORDER BY donor LIMIT 10`,
+      `SELECT DISTINCT donor FROM inventory.donations WHERE donor ILIKE $1 ORDER BY donor LIMIT 10`,
       [`%${q}%`]
     );
     res.json(result.rows);
@@ -107,7 +110,7 @@ app.post("/submit", async (req, res) => {
   ];
 
   const sql = `
-    INSERT INTO donations 
+    INSERT INTO inventory.donations 
     (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
      boy911, girl911, boy1214, girl1214, book, stuffie, bike, stocking,
      inventory_person, comments)
@@ -131,7 +134,9 @@ app.get("/table", async (req, res) => {
       date: "date DESC, id DESC",
     };
     const sort = validSorts[req.query.sort] || validSorts.date;
-    const result = await pool.query(`SELECT * FROM donations ORDER BY ${sort}`);
+    const result = await pool.query(
+      `SELECT * FROM inventory.donations ORDER BY ${sort}`
+    );
     const donations = result.rows;
 
     const totals = {
@@ -193,7 +198,7 @@ app.get("/api/reports/totals-by-date", async (req, res) => {
           book + stuffie + bike + stocking
         ) AS total_items
 
-      FROM donations
+      FROM inventory.donations
       GROUP BY date
       ORDER BY date;
     `);
@@ -214,7 +219,7 @@ SELECT
   SUM(boy02 + girl02 + boy35 + girl35 + boy68 + girl68 + boy911 + girl911 + boy1214 + girl1214 + bike + stuffie) AS total_toys,
   SUM(book) AS total_books,
   SUM(stocking) AS total_stocking
-FROM donations
+FROM inventory.donations
 GROUP BY donor
 ORDER BY num_donations DESC;
     `);
@@ -234,7 +239,7 @@ SELECT
   SUM(boy02 + girl02 + boy35 + girl35 + boy68 + girl68 + boy911 + girl911 + boy1214 + girl1214 + bike + stuffie) AS total_toys,
   SUM(book) AS total_books,
   SUM(stocking) AS total_stocking
-FROM donations
+FROM iventory.donations
 WHERE donor ILIKE '%event%'
 GROUP BY donor
 ORDER BY num_donations DESC;
@@ -249,7 +254,7 @@ ORDER BY num_donations DESC;
 // CSV Export
 app.get("/table.csv", async (req, res) => {
   const { rows } = await pool.query(
-    "SELECT * FROM donations ORDER BY date DESC, id DESC"
+    "SELECT * FROM inventory.donations ORDER BY date DESC, id DESC"
   );
   let csv =
     "Donor,Date,Boy 0-2,Girl 0-2,Boy 3-5,Girl 3-5,Boy 6-8,Girl 6-8,Boy 9-11,Girl 9-11,Boy 12-14,Girl 12-14,Book,Stuffie,Bike,Stocking,Inventory Person,Comments\n";
