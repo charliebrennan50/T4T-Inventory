@@ -4,3 +4,6 @@ node_modules
 package-lock.json
 CSV_Backup
 Data Dumps
+.env
+.env.local
+.env.render

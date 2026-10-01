@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const { Pool } = require("pg");
 const app = express();
@@ -12,18 +13,19 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 // Postgres
+const databaseUrl = process.env.DATABASE_URL;
 const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL ||
-    "postgres://postgres:Meaghan1@localhost:5432/t4t_inventory",
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+  connectionString: databaseUrl,
+  ssl:
+    databaseUrl && databaseUrl.includes("render.com")
+      ? { rejectUnauthorized: false }
+      : false,
 });
 
 // Create table on startup
 async function createTable() {
   const sql = `
-
-    CREATE TABLE IF NOT EXISTS donations (
+    CREATE TABLE IF NOT EXISTS inventory.donations (
       id SERIAL PRIMARY KEY,
       donor TEXT,
       date DATE,
@@ -108,7 +110,7 @@ app.post("/submit", async (req, res) => {
   ];
 
   const sql = `
-    INSERT INTO donations 
+    INSERT INTO inventory.donations 
     (donor, date, boy02, girl02, boy35, girl35, boy68, girl68,
      boy911, girl911, boy1214, girl1214, book, stuffie, bike, stocking,
      inventory_person, comments)
@@ -132,9 +134,7 @@ app.get("/table", async (req, res) => {
       date: "date DESC, id DESC",
     };
     const sort = validSorts[req.query.sort] || validSorts.date;
-    const result = await pool.query(
-      `SELECT * FROM donations ORDER BY ${sort}`
-    );
+    const result = await pool.query(`SELECT * FROM inventory.donations ORDER BY ${sort}`);
     const donations = result.rows;
 
     const totals = {
@@ -196,7 +196,7 @@ app.get("/api/reports/totals-by-date", async (req, res) => {
           book + stuffie + bike + stocking
         ) AS total_items
 
-      FROM donations
+      FROM inventory.donations
       GROUP BY date
       ORDER BY date;
     `);
@@ -217,7 +217,7 @@ SELECT
   SUM(boy02 + girl02 + boy35 + girl35 + boy68 + girl68 + boy911 + girl911 + boy1214 + girl1214 + bike + stuffie) AS total_toys,
   SUM(book) AS total_books,
   SUM(stocking) AS total_stocking
-FROM donations
+FROM inventory.donations
 GROUP BY donor
 ORDER BY num_donations DESC;
     `);
@@ -237,7 +237,7 @@ SELECT
   SUM(boy02 + girl02 + boy35 + girl35 + boy68 + girl68 + boy911 + girl911 + boy1214 + girl1214 + bike + stuffie) AS total_toys,
   SUM(book) AS total_books,
   SUM(stocking) AS total_stocking
-FROM donations
+FROM inventory.donations
 WHERE donor ILIKE '%event%'
 GROUP BY donor
 ORDER BY num_donations DESC;
@@ -252,17 +252,20 @@ ORDER BY num_donations DESC;
 // CSV Export
 app.get("/table.csv", async (req, res) => {
   const { rows } = await pool.query(
-    "SELECT * FROM donations ORDER BY date DESC, id DESC"
+    "SELECT * FROM inventory.donations ORDER BY date DESC, id DESC"
   );
   let csv =
     "Donor,Date,Boy 0-2,Girl 0-2,Boy 3-5,Girl 3-5,Boy 6-8,Girl 6-8,Boy 9-11,Girl 9-11,Boy 12-14,Girl 12-14,Book,Stuffie,Bike,Stocking,Inventory Person,Comments\n";
   rows.forEach((d) => {
-    csv += `"${(d.donor || "").replace(/"/g, '""')}","${d.date}",${d.boy02 || 0
-      },${d.girl02 || 0},${d.boy35 || 0},${d.girl35 || 0},${d.boy68 || 0},${d.girl68 || 0
-      },${d.boy911 || 0},${d.girl911 || 0},${d.boy1214 || 0},${d.girl1214 || 0},${d.book || 0
-      },${d.stuffie || 0},${d.bike || 0},${d.stocking || 0},"${(
-        d.inventory_person || ""
-      ).replace(/"/g, '""')}","${(d.comments || "").replace(/"/g, '""')}"\n`;
+    csv += `"${(d.donor || "").replace(/"/g, '""')}","${d.date}",${
+      d.boy02 || 0
+    },${d.girl02 || 0},${d.boy35 || 0},${d.girl35 || 0},${d.boy68 || 0},${
+      d.girl68 || 0
+    },${d.boy911 || 0},${d.girl911 || 0},${d.boy1214 || 0},${d.girl1214 || 0},${
+      d.book || 0
+    },${d.stuffie || 0},${d.bike || 0},${d.stocking || 0},"${(
+      d.inventory_person || ""
+    ).replace(/"/g, '""')}","${(d.comments || "").replace(/"/g, '""')}"\n`;
   });
   res.header("Content-Type", "text/csv");
   res.attachment("toys-for-tots-donations.csv");
